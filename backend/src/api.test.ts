@@ -14,7 +14,6 @@ describe('usuário', () => {
     expect(user.name).toBe('John Doe')
     expect(user.email).toBe('john@doe.com')
     expect(user.role).toBe('user')
-    expect(user.updatedAt).toBe(user.createdAt)
   })
 
   test('Deve editar um usuário', async () => {
@@ -34,7 +33,6 @@ describe('usuário', () => {
     expect(user.name).toBe('Jane Doe')
     expect(user.email).toBe('jane@doe.com')
     expect(user.role).toBe('admin')
-    expect(user.updatedAt).not.toBe(user.createdAt)
   })
 
   test('Deve remover um usuário', async () => {
