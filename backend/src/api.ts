@@ -1,16 +1,19 @@
 import express from 'express'
 import crypto from 'crypto'
 import { UserRepositoryDatabase } from './infra/repository/user-repository-database'
+import { PgPromiseAdapter } from './infra/database/pg-promise-adapter'
 import { CreateUser } from './application/usecases/user/create-user'
 import { UpdateUser } from './application/usecases/user/update-user'
 import { GetUser } from './application/usecases/user/get-user'
 import { DeleteUser } from './application/usecases/user/delete-user'
-import { PgPromiseAdapter } from './infra/database/PgPromiseAdapter'
+import { CreateEvent } from './application/usecases/events/create-event'
+import { EventRepositoryDatabase } from './infra/repository/event-repository-database'
 
 const app = express()
 app.use(express.json())
 const connection = new PgPromiseAdapter()
 const userRespository = new UserRepositoryDatabase(connection)
+const eventRepository = new EventRepositoryDatabase(connection)
 
 app.post('/api/usuarios', async function (req, res) {
   try {
@@ -61,11 +64,19 @@ app.delete('/api/usuarios/:userId', async function (req, res) {
 })
 
 app.post('/api/usuarios/:userId/eventos', async function (req, res) {
-  const eventId = crypto.randomUUID()
-  const userId = req.params.userId
-  const active = new Date() >= new Date(req.body.startsAt)
-  await connection.query('INSERT INTO tattoo.event (id, user_id, title, starts_at, ends_at, phone, active, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $8)', [eventId, userId, req.body.title, req.body.startsAt, req.body.endsAt, req.body.phone, active, new Date()])
-  res.status(201).json({ eventId })
+  try {
+    const usecase = new CreateEvent(eventRepository)
+    const userId = req.params.userId
+    const active = new Date() >= new Date(req.body.startsAt)
+    const { eventId } = await usecase.execute({
+      ...req.body,
+      userId,
+      active
+    })
+    res.status(201).json({ eventId })
+  } catch (error: any) {
+    res.status(422).send(error.message)
+  }
 })
 
 app.put('/api/eventos/:eventId', async function (req, res) {
