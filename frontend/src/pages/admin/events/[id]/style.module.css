@@ -1,0 +1,32 @@
+.artGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.4rem;
+}
+
+.artItem img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  box-shadow: var(--hover-drop-shadow);
+  border-radius: .5rem;
+}
+
+@media screen and (min-width: 600px) {
+  .artGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (min-width: 786px) {
+  .artGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media screen and (min-width: 980px) {
+  .artGrid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}

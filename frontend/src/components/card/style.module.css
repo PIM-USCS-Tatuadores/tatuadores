@@ -1,0 +1,26 @@
+.card {
+  display: block;
+  width: 100%;
+  padding: 1.6rem;
+  background-color: var(--color-white);
+  border: 0;
+  text-align: left;
+  border-radius: var(--default-border-radius);
+  box-shadow: var(--default-drop-shadow);
+  transition: box-shadow .2s ease;
+}
+
+.card:focus {
+  outline: .2rem solid var(--color-warn);
+  box-shadow: var(--hover-drop-shadow);
+}
+
+@media (hover: hover) {
+  .card:is(a, button) {
+    cursor: pointer;
+  }
+
+  .card:hover {
+    box-shadow: var(--hover-drop-shadow);
+  }
+}

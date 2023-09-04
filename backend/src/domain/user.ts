@@ -1,20 +1,24 @@
 import crypto from 'crypto'
-import { Email } from './email'
+import { Email } from './Email'
+import { Password } from './Password'
 
 export class User {
-  email: Email
-
-  constructor(
+  private constructor(
     readonly userId: string,
-    readonly name: string,
-    email: string,
-    readonly role: string,
-  ) {
-    this.email = new Email(email)
+    readonly email: Email,
+    readonly password: Password
+  ) {}
+
+  static create(email: string, password: string) {
+    const userId = crypto.randomUUID()
+    return new User(userId, new Email(email), Password.create(password))
   }
 
-  static create(name: string, email: string, role: string) {
-    const userId = crypto.randomUUID()
-    return new User(userId, name, email, role)
+  static restore(userId: string, email: string, password: string) {
+    return new User(userId, new Email(email), new Password(password))
+  }
+
+  validatePassword(password: string) {
+    return this.password.validate(password)
   }
 }

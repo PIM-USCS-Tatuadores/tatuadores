@@ -1,11 +1,18 @@
-import pgp from 'pg-promise'
+import pgp, { IConnectionOptions } from 'pg-promise'
 import { IConnection, TransactionCallback } from "./connection";
 
 export class PgPromiseAdapter implements IConnection {
   private connection: any
 
   constructor() {
-    this.connection = pgp()('postgres://postgres:123456@localhost:5432/tattoo')
+    this.connection = pgp()({
+      host: process.env.POSTGRES_HOST,
+      port: parseInt(process.env.POSTGRES_PORT as string, 10),
+      database: process.env.POSTGRES_DB,
+      user: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      max: 30
+    })
   }
 
   query(query: string, params: any) {

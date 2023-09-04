@@ -1,4 +1,4 @@
-import { Email } from "./email"
+import { Email } from "./Email"
 
 describe('Email', () => {
   test('Deve criar um value object com email', () => {
