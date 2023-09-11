@@ -12,11 +12,7 @@ class HTTPError extends Error {
 }
 
 export class FetchAdapter implements IHttpClient {
-  private baseUrl: string
-
-  constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000/'
-  }
+  constructor(private readonly baseUrl: string = 'http://localhost:3001/') {}
 
   getAbsoluteUrl(path: string) {
     const url = new URL(path, this.baseUrl)
@@ -25,15 +21,14 @@ export class FetchAdapter implements IHttpClient {
 
   async get(path: string, options?: HttpClientOptions) {
     const response = await fetch(this.getAbsoluteUrl(path), options)
+    const json = await response.json()
     if (!response.ok) {
       throw new HTTPError('Request Error', {
         status: response.status,
-        // message: json.message
+        message: json.message
       })
-    } else {
-      const json = await response.json()
-      return json
     }
+    return json
   }
 
   async post(path: string, data: any, options?: HttpClientOptions) {
@@ -42,16 +37,13 @@ export class FetchAdapter implements IHttpClient {
       body: JSON.stringify(data),
       ...options
     })
-
     const json = await response.json();
-
     if (!response.ok) {
       throw new HTTPError('Request Error', {
         status: response.status,
         message: json.message
       })
     }
-
     return json
   }
 

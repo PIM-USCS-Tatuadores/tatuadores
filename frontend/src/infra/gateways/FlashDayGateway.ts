@@ -12,13 +12,13 @@ export class FlashDayGateway implements IFlashDayGateway {
   constructor(readonly httpClient: IHttpClient) {}
 
   async get(id: string, options?: FlashDayGatewayOptions) {
-    const endpoint = `http://localhost:3001/api/v1/flash_days/${id}`
+    const endpoint = `/api/v1/flash_days/${id}`
     const response: FlashDayDTO = await this.httpClient.get(endpoint, options)
     return this.transformFlashDay(response)
   }
 
   async getAllById(id: string, options?: FlashDayGatewayOptions) {
-    const endpoint = `http://localhost:3001/api/v1/artists/${id}/flash_days`
+    const endpoint = `/api/v1/artists/${id}/flash_days`
     const response: FlashDayDTO[] = await this.httpClient.get(endpoint, {
       signal: options?.signal,
       headers: Object.assign({}, options?.headers, {
@@ -29,7 +29,7 @@ export class FlashDayGateway implements IFlashDayGateway {
   }
 
   async create(data: FlashDayDTO, options?: FlashDayGatewayOptions) {
-    const endpoint = 'http://localhost:3001/api/v1/flash_days'
+    const endpoint = '/api/v1/flash_days'
     const body = {
       title: data.title,
       startsAt: data.starts_at,
@@ -48,7 +48,7 @@ export class FlashDayGateway implements IFlashDayGateway {
   }
 
   async update(id: string, data: UpdateFlashDayDTO, options?: FlashDayGatewayOptions) {
-    const endpoint = `http://localhost:3001/api/v1/flash_days/${id}`
+    const endpoint = `/api/v1/flash_days/${id}`
     const response = await this.httpClient.patch(endpoint, data, {
       signal: options?.signal,
       headers: Object.assign({}, options?.headers, {

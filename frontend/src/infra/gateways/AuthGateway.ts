@@ -5,7 +5,7 @@ export class AuthGateway implements IAuthGateway {
   constructor(readonly httpClient: IHttpClient) {}
 
   async register(email: string, password: string): Promise<void> {
-    await this.httpClient.post('http://localhost:3001/api/v1/artists/register', {
+    await this.httpClient.post('/api/v1/artists/register', {
       email,
       password
     }, {
@@ -15,8 +15,8 @@ export class AuthGateway implements IAuthGateway {
     })
   }
 
-  async login(email: string, password: string): Promise<{ token: string; }> {
-    const response = await this.httpClient.post('http://localhost:3001/api/v1/login', {
+  async login(email: string, password: string): Promise<void> {
+    await this.httpClient.post('/api/v1/login', {
       email,
       password
     }, {
@@ -25,13 +25,10 @@ export class AuthGateway implements IAuthGateway {
       },
       credentials: 'include'
     })
-    return {
-      token: response.token
-    }
   }
 
   async getUser(options?: AuthGatewayOptions): Promise<User> {
-    const response: UserDTO = await this.httpClient.get('http://localhost:3001/api/v1/current_user', {
+    const response: UserDTO = await this.httpClient.get('/api/v1/current_user', {
       signal: options?.signal,
       credentials: 'include',
       headers: Object.assign({}, options?.headers, {

@@ -52,7 +52,8 @@ app.post('/api/v1/login', async (req, res) => {
       httpOnly: false,
       secure: false
     })
-    res.sendStatus(200)
+    res.status(200)
+    res.json({})
   } catch (error: any) {
     res.status(403).json({
       message: error.message
@@ -74,7 +75,8 @@ app.get('/api/v1/current_user', withAuthMiddleware, async (req, res) => {
     })
   } catch (error: any) {
     res.cookie('token', '')
-    res.sendStatus(403)
+    res.status(403)
+    res.json({})
   }
 })
 

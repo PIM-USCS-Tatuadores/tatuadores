@@ -1,6 +1,6 @@
 export interface IAuthGateway {
   register(email: string, password: string, options?: AuthGatewayOptions): Promise<void>
-  login(email: string, password: string, options?: AuthGatewayOptions): Promise<{ token: string }>
+  login(email: string, password: string, options?: AuthGatewayOptions): Promise<void>
   getUser(options?: AuthGatewayOptions): Promise<User>
 }
 
