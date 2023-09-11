@@ -1,0 +1,104 @@
+/**
+ * display -> 40px
+ * title -> 32px
+ * subtitle -> 24px
+ * body-1 -> 16px
+ * body-2 -> 14px
+ * caption -> 12px
+ */
+
+.text {
+  color: var(--color-black);
+}
+
+.text.xs-display {
+  font-size: 4rem;
+  font-weight: 700;
+}
+
+.text.xs-title {
+  font-size: 3.2rem;
+  font-weight: 700;
+}
+
+.text.xs-subtitle {
+  font-size: 2.4rem;
+  font-weight: 700;
+}
+
+.text.xs-body-1 {
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+
+.text.xs-body-2 {
+  font-size: 1.4rem;
+  font-weight: 400;
+}
+
+.text.xs-caption {
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+.text.xs-body-1-bold {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.text.xs-body-2-bold {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.text.xs-caption-bold {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+@media screen and (min-width: 786px) {
+  .text.md-display {
+    font-size: 4rem;
+    font-weight: 700;
+  }
+
+  .text.md-title {
+    font-size: 3.2rem;
+    font-weight: 700;
+  }
+
+  .text.md-subtitle {
+    font-size: 2.4rem;
+    font-weight: 700;
+  }
+
+  .text.md-body-1 {
+    font-size: 1.6rem;
+    font-weight: 400;
+  }
+
+  .text.md-body-2 {
+    font-size: 1.4rem;
+    font-weight: 400;
+  }
+
+  .text.md-caption {
+    font-size: 1.2rem;
+    font-weight: 400;
+  }
+
+  .text.md-body-1-bold {
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+
+  .text.md-body-2-bold {
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  .text.md-caption-bold {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+}

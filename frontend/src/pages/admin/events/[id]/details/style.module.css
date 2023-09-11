@@ -1,0 +1,17 @@
+.actionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.6rem;
+}
+
+@media screen and (min-width: 786px) {
+  .actionGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (min-width: 980px) {
+  .actionGrid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}

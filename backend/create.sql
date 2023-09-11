@@ -1,27 +1,28 @@
-DROP TABLE IF EXISTS tattoo.eventview;
-DROP TABLE IF EXISTS tattoo.artview;
-DROP TABLE IF EXISTS tattoo.contact;
-DROP TABLE IF EXISTS tattoo.art;
-DROP TABLE IF EXISTS tattoo.event;
-DROP TABLE IF EXISTS tattoo.user;
-DROP TABLE IF EXISTS tattoo.image;
-
-DROP SCHEMA IF EXISTS tattoo;
+DROP SCHEMA tattoo CASCADE;
 CREATE SCHEMA tattoo;
 
 CREATE TABLE tattoo.user (
   id UUID PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  role TEXT NOT NULL,
+  email TEXT NOT NULL UNIQUE,
+  password TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
   deleted_at TIMESTAMP WITH TIME ZONE
 );
 
-CREATE TABLE tattoo.event (
+CREATE TABLE tattoo.artist (
   id UUID PRIMARY KEY,
-  user_id UUID not null,
+  cpf TEXT,
+  name TEXT,
+  email TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  deleted_at TIMESTAMP WITH TIME ZONE
+);
+
+CREATE TABLE tattoo.flashday (
+  id UUID PRIMARY KEY,
+  artist_id UUID not null,
   title TEXT NOT NULL,
   starts_at TIMESTAMP WITH TIME ZONE NOT NULL,
   ends_at TIMESTAMP WITH TIME ZONE,
@@ -30,15 +31,15 @@ CREATE TABLE tattoo.event (
   created_at TIMESTAMP WITH TIME ZONE NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
   deleted_at TIMESTAMP WITH TIME ZONE,
-  FOREIGN KEY (user_id) REFERENCES tattoo.user(id)
+  FOREIGN KEY (artist_id) REFERENCES tattoo.artist(id)
 );
 
-CREATE TABLE tattoo.eventview (
+CREATE TABLE tattoo.flashdayview (
   id UUID PRIMARY KEY,
   event_id UUID NOT NULL,
   session_id UUID NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL,
-  FOREIGN KEY (event_id) REFERENCES tattoo.event(id)
+  FOREIGN KEY (event_id) REFERENCES tattoo.flashday(id)
 );
 
 CREATE TABLE tattoo.image (
@@ -60,7 +61,7 @@ CREATE TABLE tattoo.art (
   created_at TIMESTAMP WITH TIME ZONE NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
   deleted_at TIMESTAMP WITH TIME ZONE,
-  FOREIGN KEY (event_id) REFERENCES tattoo.event(id),
+  FOREIGN KEY (event_id) REFERENCES tattoo.flashday(id),
   FOREIGN KEY (image_id) REFERENCES tattoo.image(id)
 );
 

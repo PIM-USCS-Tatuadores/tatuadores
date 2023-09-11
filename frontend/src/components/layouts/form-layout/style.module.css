@@ -1,0 +1,25 @@
+.formLayout {
+  height: 100%;
+}
+
+.formLayoutContainer {
+  flex: 1;
+  max-width: clamp(36.8rem, 50%, 48rem);
+}
+
+.formLayout.center .formLayoutContainer {
+  transform: translateY(-4.8rem);
+}
+
+@media screen and (min-width: 786px) {
+  .formLayout.center .formLayoutContainer {
+    transform: translateY(0);
+  }
+
+  .formLayoutContainer {
+    padding: 4.8rem;
+    background-color: var(--color-white);
+    border-radius: var(--default-border-radius);
+    box-shadow: var(--default-drop-shadow);
+  }
+}

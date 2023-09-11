@@ -1,0 +1,10 @@
+.baseLayout {
+  height: 100vh;
+  padding: 3.2rem 2.4rem;
+}
+
+@media screen and (min-width: 786px) {
+  .baseLayout {
+    padding: 4rem;
+  }
+}
