@@ -31,7 +31,7 @@ export class FlashDayRepositoryMemory implements IFlashDayRepository {
       title: flashDay.title || actualFlashDay.title,
       startsAt: flashDay.startsAt || actualFlashDay.startsAt,
       endsAt: flashDay.endsAt || actualFlashDay.endsAt,
-      phone: flashDay.phone?.value || actualFlashDay.phone,
+      phone: flashDay.phone || actualFlashDay.phone,
       active: flashDay.active === undefined ? actualFlashDay.active : flashDay.active,
       artistId
     })

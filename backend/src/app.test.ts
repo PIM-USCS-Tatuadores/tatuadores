@@ -10,16 +10,17 @@ beforeAll(() => {
 afterAll((done) => close(done))
 
 test('Deve registrar um novo artista', async () => {
-  const [artistId] = await login("john@doe.com", "123456")
+  const artistId = await register("John Doe", "john@doe.com", "123456")
   const artistResponse = await axios.get(`http://localhost:3000/api/v1/artists/${artistId}`)
   const artist = artistResponse.data
   expect(artist.email).toBe('john@doe.com')
-  expect(artist.name).toBeFalsy()
+  expect(artist.name).toBe("John Doe")
   expect(artist.document).toBeFalsy()
 })
 
 test('Deve logar no sistema', async () => {
-  const [, tokenCookie] = await login("john1@doe.com", "123456")
+  await register("John Doe", "john1@doe.com", "123456")
+  const tokenCookie = await login("john1@doe.com", "123456")
   const userResponse = await axios.get('http://localhost:3000/api/v1/current_user', {
     headers: {
       'Cookie': tokenCookie
@@ -28,7 +29,7 @@ test('Deve logar no sistema', async () => {
   const user = userResponse.data
   expect(user.id).toEqual(expect.any(String))
   expect(user.email).toBe('john1@doe.com')
-  expect(user.name).toBeFalsy()
+  expect(user.name).toBe('John Doe')
   expect(user.document).toBeFalsy()
 })
 
@@ -47,7 +48,8 @@ test('Deve retornar um token vazio para um usuário inexistente', async () => {
 })
 
 test('Deve criar um evento flash day', async () => {
-  const [, tokenCookie] = await login("john2@doe.com", "123456")
+  await register("John Doe", "john2@doe.com", "123456")
+  const tokenCookie = await login("john2@doe.com", "123456")
   const createResponse = await axios.post(`http://localhost:3000/api/v1/flash_days`, {
     title: 'Flash Tattoo #1',
     startsAt: (new Date(2023, 10, 12)).toISOString(),
@@ -71,7 +73,8 @@ test('Deve criar um evento flash day', async () => {
 })
 
 test('Deve editar um evento flash day', async () => {
-  const [, tokenCookie] = await login("jane@doe.com", "123456")
+  await register("John Doe", "jane@doe.com", "123456")
+  const tokenCookie = await login("jane@doe.com", "123456")
   const createResponse = await axios.post(`http://localhost:3000/api/v1/flash_days`, {
     title: 'Flash Tattoo #2',
     startsAt: (new Date(2023, 10, 15)).toISOString(),
@@ -118,7 +121,8 @@ test('Deve falhar ao criar um evento flash day sem autenticação', async () => 
 })
 
 test('Deve trazer todos os eventos flash days de um usuário', async () => {
-  const [artistId, tokenCookie] = await login("john4@doe.com", "123456")
+  const artistId = await register("John Doe", "john4@doe.com", "123456")
+  const tokenCookie = await login("john4@doe.com", "123456")
   await axios.post(`http://localhost:3000/api/v1/flash_days`, {
     title: 'Flash Tattoo #1',
     startsAt: (new Date(2023, 10, 12)).toISOString(),
@@ -162,16 +166,21 @@ test('Deve trazer todos os eventos flash days de um usuário', async () => {
   ])
 })
 
-async function login(email: string, password: string) {
+async function register(name: string, email: string, password: string) {
   const registerResponse = await axios.post('http://localhost:3000/api/v1/artists/register', {
+    name,
     email,
     password
   })
   const artistId = registerResponse.data.artist_id
+  return artistId
+}
+
+async function login(email: string, password: string) {
   const loginResponse = await axios.post('http://localhost:3000/api/v1/login', {
     email,
     password
   })
   const tokenCookie = loginResponse.headers['set-cookie']?.[0] as string
-  return [artistId, tokenCookie]
+  return tokenCookie
 }

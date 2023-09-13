@@ -9,6 +9,7 @@ describe('RegisterArtistUseCase', () => {
       new ArtistRepositoryMemory()
     )
     const input = {
+      name: 'John Doe',
       email: 'john@doe.com',
       password: '123456'
     }

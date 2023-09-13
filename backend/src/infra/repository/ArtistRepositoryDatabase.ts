@@ -10,7 +10,6 @@ export class ArtistRepositoryDatabase implements IArtistRepository {
       SELECT id, name, cpf, email FROM tattoo.artist
       WHERE id = $1
     `, [artistId])
-
     return new Artist(data.id, data.name, data.cpf, data.email)
   }
 

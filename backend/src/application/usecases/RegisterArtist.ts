@@ -16,7 +16,6 @@ export class RegisterArtist {
       this.userRepository.save(user),
       this.artistRepository.save(artist)
     ])
-
     return {
       artistId: artist.artistId
     }

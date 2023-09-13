@@ -11,7 +11,7 @@ describe('UpdateFlashDay', () => {
     const flashDay = new FlashDay(flashDayId, 'Flash Tattoo #4', new Date(2020, 6, 8), undefined, new Phone('11949729444'), true);
     flashDayRepository.save(flashDay, artistId)
     const usecase = new UpdateFlashDay(flashDayRepository)
-    const output = await usecase.execute({
+    await usecase.execute({
       flashDayId,
       artistId,
       title: 'Flash Tattoo #5',
