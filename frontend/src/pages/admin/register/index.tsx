@@ -12,13 +12,14 @@ import { GetServerSidePropsContext } from 'next'
 export default function Register() {
   const router = useRouter()
   const authGateway = Injector.inject<IAuthGateway>('authGateway')
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   async function register(event: FormEvent<HTMLOrSVGElement>) {
     event.preventDefault()
     try {
-      await authGateway.register(email, password)
+      await authGateway.register(name, email, password)
       navigateToLogin()
     } catch(error: any) {
       console.log(error.message)
@@ -45,6 +46,17 @@ export default function Register() {
           direction={{ xs: 'column' }}
           gap={{ xs: 'small' }}
         >
+          <Input label="Nome">
+            <input
+              type="text"
+              name="name"
+              placeholder='Digite o seu nome'
+              value={name}
+              onChange={({ target }) => setName(target.value)}
+              required
+            />
+          </Input>
+
           <Input label="Email">
             <input
               type="email"

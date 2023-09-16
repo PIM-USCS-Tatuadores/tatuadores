@@ -4,8 +4,9 @@ import { AuthGatewayOptions, IAuthGateway, User, UserDTO } from "./Auth";
 export class AuthGateway implements IAuthGateway {
   constructor(readonly httpClient: IHttpClient) {}
 
-  async register(email: string, password: string): Promise<void> {
+  async register(name: string, email: string, password: string): Promise<void> {
     await this.httpClient.post('/api/v1/artists/register', {
+      name,
       email,
       password
     }, {
