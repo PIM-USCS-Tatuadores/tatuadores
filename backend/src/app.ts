@@ -5,6 +5,7 @@ import { config } from './environment'
 import { PgPromiseAdapter } from './infra/database/pg-promise-adapter'
 import { UserRepositoryDatabase } from './infra/repository/UserRepositoryDatabase'
 import { ArtistRepositoryDatabase } from './infra/repository/ArtistRepositoryDatabase'
+import { ArtRepositoryDatabase } from './infra/repository/ArtRepostoryDatabase'
 import { RegisterArtist } from './application/usecases/RegisterArtist'
 import { GetArtist } from './application/usecases/GetArtist'
 import { Login } from './application/usecases/Login'
@@ -14,6 +15,8 @@ import { TokenGenerator } from './domain/TokenGenerator'
 import { GetFlashDay } from './application/usecases/GetFlashDay'
 import { GetArtistFlashDays } from './application/usecases/GetArtistFlashDays'
 import { UpdateFlashDay } from './application/usecases/UpdateFlashDay'
+import { CreateArt } from './application/usecases/CreateArt'
+import { GetArt } from './application/usecases/GetArt'
 
 config(process.env.NODE_ENV)
 const app = express()
@@ -28,6 +31,7 @@ const connection = new PgPromiseAdapter()
 const userRepository = new UserRepositoryDatabase(connection)
 const artistRepository = new ArtistRepositoryDatabase(connection)
 const flashDayRepository = new FlashDayRepositoryDatabase(connection)
+const artRepository = new ArtRepositoryDatabase(connection)
 
 app.post('/api/v1/artists/register', async (req, res) => {
   try {
@@ -37,7 +41,6 @@ app.post('/api/v1/artists/register', async (req, res) => {
       artist_id: output.artistId
     })
   } catch (error: any) {
-    console.log(error.message)
     res.status(422).json({
       message: error.message
     })
@@ -186,15 +189,70 @@ app.get('/api/v1/flash_days/:flashDayId', async (req, res) => {
   }
 })
 
+app.post('/api/v1/flash_days/:flashDayId/art', withAuthMiddleware, async (req, res) => {
+  try {
+    const artistId = req.user.id
+    const flashDayId = req.params.flashDayId
+    const usecase = new CreateArt(artRepository)
+    const output = await usecase.execute({
+      title: req.body.title,
+      description: req.body.description,
+      price: req.body.price,
+      size: req.body.size,
+      href: req.body.href,
+      altText: req.body.alt,
+      flashDayId
+    })
+    res.status(201).json({
+      art_id: output.artId
+    })
+  } catch (error: any) {
+    res.status(422).json({
+      message: error.message
+    })
+  }
+})
+
+app.get('/api/v1/art/:artId', async (req, res) => {
+  try {
+    const artId = req.params.artId
+    const usecase = new GetArt(artRepository)
+    const output = await usecase.execute({ artId })
+    if (!output) {
+      return res.status(404).json({
+        message: 'Art not found'
+      })
+    }
+    return res.status(200).json({
+      title: output.title,
+      description: output.description,
+      price: output.price,
+      size: output.size,
+      href: output.href,
+      alt_text: output.altText
+    })
+  } catch (error: any) {
+    res.status(400).json({
+      message: error.message
+    })
+  }
+})
+
 function withAuthMiddleware(req: Request, res: Response, next: NextFunction) {
   const accessToken = req.cookies.token
-  if (!accessToken) return res.status(401).end()
+  if (!accessToken) {
+    return res.status(401).json({
+      message: 'Not Authorized'
+    })
+  }
   try {
     const response = TokenGenerator.verify(accessToken, "secret")
     req.user = response
     next()
   } catch (error: any) {
-    res.status(403).end()
+    res.status(403).json({
+      message: 'Forbidden'
+    })
   }
 }
 
