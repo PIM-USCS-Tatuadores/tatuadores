@@ -181,7 +181,7 @@ test('Deve criar uma arte para um evento flash day', async () => {
     }
   })
   const flashDayId = flashDayResponse.data.flash_day_id
-  const createResponse = await axios.post(`http://localhost:3000/api/v1/flash_days/${flashDayId}/art`, {
+  const createResponse = await axios.post(`http://localhost:3000/api/v1/flash_days/${flashDayId}/arts`, {
     title: 'Título da Arte #1',
     description: 'Descrição da arte',
     price: 300,
@@ -194,7 +194,7 @@ test('Deve criar uma arte para um evento flash day', async () => {
     }
   })
   const artId = createResponse.data.art_id
-  const artResponse = await axios.get(`http://localhost:3000/api/v1/art/${artId}`)
+  const artResponse = await axios.get(`http://localhost:3000/api/v1/arts/${artId}`)
   const art = artResponse.data
   expect(artId).toBeDefined()
   expect(art.title).toBe('Título da Arte #1')
@@ -203,6 +203,70 @@ test('Deve criar uma arte para um evento flash day', async () => {
   expect(art.size).toBe(12)
   expect(art.href).toBe('https://cdn.awsli.com.br/600x1000/779/779540/produto/1562181402876970705.jpg')
   expect(art.alt_text).toBe('imagem de um leão')
+})
+
+test('Deve trazer todas as artes de um evento flash day', async () => {
+  await register("John Doe", "john10@doe.com", "123456")
+  const tokenCookie = await login("john10@doe.com", "123456")
+  const flashDayResponse = await axios.post(`http://localhost:3000/api/v1/flash_days`, {
+    title: 'Flash Tattoo #1',
+    startsAt: (new Date(2023, 10, 12)).toISOString(),
+    endsAt: undefined,
+    phone: '11949729444',
+    active: true
+  }, {
+    headers: {
+      'Cookie': tokenCookie
+    }
+  })
+  const flashDayId = flashDayResponse.data.flash_day_id
+  await axios.post(`http://localhost:3000/api/v1/flash_days/${flashDayId}/arts`, {
+    title: 'Título da Arte #1',
+    description: 'Descrição da arte',
+    price: 300,
+    size: 12,
+    href: 'https://cdn.awsli.com.br/600x1000/779/779540/produto/1562181402876970705.jpg',
+    alt: 'imagem de um leão'
+  }, {
+    headers: {
+      'Cookie': tokenCookie
+    }
+  })
+  await axios.post(`http://localhost:3000/api/v1/flash_days/${flashDayId}/arts`, {
+    title: 'Título da Arte #2',
+    description: 'Descrição da arte',
+    price: 200,
+    size: 13,
+    href: 'https://cdn.awsli.com.br/600x1000/779/779540/produto/1562181402876970705.jpg',
+    alt: 'imagem de um leão'
+  }, {
+    headers: {
+      'Cookie': tokenCookie
+    }
+  })
+  const artsResponse = await axios.get(`http://localhost:3000/api/v1/flash_days/${flashDayId}/arts`)
+  const arts = artsResponse.data
+  expect(arts).toHaveLength(2)
+  expect(arts).toEqual([
+    {
+      id: expect.any(String),
+      title: 'Título da Arte #1',
+      description: 'Descrição da arte',
+      price: 300,
+      size: 12,
+      href: 'https://cdn.awsli.com.br/600x1000/779/779540/produto/1562181402876970705.jpg',
+      alt_text: 'imagem de um leão'
+    },
+    {
+      id: expect.any(String),
+      title: 'Título da Arte #2',
+      description: 'Descrição da arte',
+      price: 200,
+      size: 13,
+      href: 'https://cdn.awsli.com.br/600x1000/779/779540/produto/1562181402876970705.jpg',
+      alt_text: 'imagem de um leão'
+    }
+  ])
 })
 
 async function register(name: string, email: string, password: string) {

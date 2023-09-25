@@ -17,6 +17,7 @@ import { GetArtistFlashDays } from './application/usecases/GetArtistFlashDays'
 import { UpdateFlashDay } from './application/usecases/UpdateFlashDay'
 import { CreateArt } from './application/usecases/CreateArt'
 import { GetArt } from './application/usecases/GetArt'
+import { GetFlashDayArts } from './application/usecases/GetFlashDayArts'
 
 config(process.env.NODE_ENV)
 const app = express()
@@ -189,9 +190,8 @@ app.get('/api/v1/flash_days/:flashDayId', async (req, res) => {
   }
 })
 
-app.post('/api/v1/flash_days/:flashDayId/art', withAuthMiddleware, async (req, res) => {
+app.post('/api/v1/flash_days/:flashDayId/arts', withAuthMiddleware, async (req, res) => {
   try {
-    const artistId = req.user.id
     const flashDayId = req.params.flashDayId
     const usecase = new CreateArt(artRepository)
     const output = await usecase.execute({
@@ -213,7 +213,28 @@ app.post('/api/v1/flash_days/:flashDayId/art', withAuthMiddleware, async (req, r
   }
 })
 
-app.get('/api/v1/art/:artId', async (req, res) => {
+app.get('/api/v1/flash_days/:flashDayId/arts', async (req, res) => {
+  try {
+    const flashDayId = req.params.flashDayId
+    const usecase = new GetFlashDayArts(artRepository)
+    const output = await usecase.execute({ flashDayId })
+    res.status(200).json(output.map((item) => ({
+      id: item.id,
+      title: item.title,
+      description: item.description,
+      price: item.price,
+      size: item.size,
+      href: item.href,
+      alt_text: item.altText
+    })))
+  } catch (error: any) {
+    res.status(400).json({
+      message: error.message
+    })
+  }
+})
+
+app.get('/api/v1/arts/:artId', async (req, res) => {
   try {
     const artId = req.params.artId
     const usecase = new GetArt(artRepository)

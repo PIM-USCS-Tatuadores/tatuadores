@@ -2,7 +2,7 @@ import { FlashDay } from "../../domain/FlashDay"
 import { FlashDayRepositoryMemory } from "../../infra/repository/FlashDayRepositoryMemory"
 import { GetArtistFlashDays } from "./GetArtistFlashDays"
 
-describe('GetArtistsFlashDays', () => {
+describe('GetArtistFlashDays', () => {
   test('Deve buscar todos os eventos flash day de um artista', async () => {
     const repository = new FlashDayRepositoryMemory()
     const artistId = '12345'

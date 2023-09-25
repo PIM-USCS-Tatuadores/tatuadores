@@ -8,7 +8,17 @@ export class ArtRepositoryMemory implements IArtRepository {
     return this.arts.get(artId)
   }
 
-  async save(art: Art, flashDayId: string): Promise<any> {
+  async getAllByFlashDay(flashDayId: string): Promise<Art[]> {
+    let arts = []
+    for(let [, art] of this.arts) {
+      if (art.flashDayId === flashDayId) {
+        arts.push(art)
+      }
+    }
+    return arts
+  }
+
+  async save(art: Art, flashDayId: string): Promise<void> {
     this.arts.set(art.artId, { ...art, flashDayId })
   }
 }
