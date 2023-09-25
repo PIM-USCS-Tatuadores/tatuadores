@@ -36,33 +36,25 @@ CREATE TABLE tattoo.flashday (
 
 CREATE TABLE tattoo.flashdayview (
   id UUID PRIMARY KEY,
-  event_id UUID NOT NULL,
+  flashday_id UUID NOT NULL,
   session_id UUID NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL,
-  FOREIGN KEY (event_id) REFERENCES tattoo.flashday(id)
-);
-
-CREATE TABLE tattoo.image (
-  id TEXT PRIMARY KEY,
-  href TEXT NOT NULL,
-  alt_text TEXT,
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE NOT NULL
+  FOREIGN KEY (flashday_id) REFERENCES tattoo.flashday(id)
 );
 
 CREATE TABLE tattoo.art (
   id UUID PRIMARY KEY,
-  event_id UUID NOT NULL,
-  image_id TEXT NOT NULL,
+  flashday_id UUID NOT NULL,
   title TEXT NOT NULL,
   description TEXT,
   price NUMERIC NOT NULL,
   size NUMERIC NOT NULL,
+  href TEXT NOT NULL,
+  alt_text TEXT,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
   deleted_at TIMESTAMP WITH TIME ZONE,
-  FOREIGN KEY (event_id) REFERENCES tattoo.flashday(id),
-  FOREIGN KEY (image_id) REFERENCES tattoo.image(id)
+  FOREIGN KEY (flashday_id) REFERENCES tattoo.flashday(id)
 );
 
 CREATE TABLE tattoo.artview (
