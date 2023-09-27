@@ -6,7 +6,7 @@ export class CreateArt {
 
   async execute(input: CreateArtInput): Promise<CreateArtOutput> {
     const art = Art.create(input.title, input.description, input.price, input.size, input.href, input.altText)
-    await this.artRepository.save(art, input.flashDayId)
+    await this.artRepository.save(art, input.flashDayId, input.artistId)
     return { artId: art.artId }
   }
 }
@@ -18,7 +18,8 @@ type CreateArtInput = {
   size: number,
   href: string,
   altText?: string,
-  flashDayId: string
+  flashDayId: string,
+  artistId: string
 }
 
 type CreateArtOutput = {

@@ -1,8 +1,8 @@
-import pgp, { IConnectionOptions } from 'pg-promise'
+import pgp, { IDatabase } from 'pg-promise'
 import { IConnection, TransactionCallback } from "./connection";
 
 export class PgPromiseAdapter implements IConnection {
-  private connection: any
+  private connection: IDatabase<any>
 
   constructor() {
     this.connection = pgp()({
@@ -15,7 +15,11 @@ export class PgPromiseAdapter implements IConnection {
     })
   }
 
-  query(query: string, params: any) {
+  one(query: string, params: any[]): Promise<any> {
+    return this.connection.one(query, params)
+  }
+
+  query(query: string, params: any[]) {
     return this.connection.query(query, params)
   }
 
@@ -24,6 +28,6 @@ export class PgPromiseAdapter implements IConnection {
   }
 
   async close() {
-      await this.connection.$pool.end()
+    await this.connection.$pool.end()
   }
 }
