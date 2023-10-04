@@ -12,7 +12,8 @@ describe('CreateArt', () => {
       size: 12,
       href: 'http://test.com/test.jpg',
       altText: undefined,
-      flashDayId: '12345'
+      flashDayId: '12345',
+      artistId: '123456'
     }
     const output = await usecase.execute(input)
     expect(output.artId).toBeDefined()

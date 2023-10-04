@@ -193,6 +193,7 @@ app.get('/api/v1/flash_days/:flashDayId', async (req, res) => {
 app.post('/api/v1/flash_days/:flashDayId/arts', withAuthMiddleware, async (req, res) => {
   try {
     const flashDayId = req.params.flashDayId
+    const artistId = req.user.userId
     const usecase = new CreateArt(artRepository)
     const output = await usecase.execute({
       title: req.body.title,
@@ -201,12 +202,14 @@ app.post('/api/v1/flash_days/:flashDayId/arts', withAuthMiddleware, async (req, 
       size: req.body.size,
       href: req.body.href,
       altText: req.body.alt,
-      flashDayId
+      flashDayId,
+      artistId
     })
     res.status(201).json({
       art_id: output.artId
     })
   } catch (error: any) {
+    console.log(error.message)
     res.status(422).json({
       message: error.message
     })
