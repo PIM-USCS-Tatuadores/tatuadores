@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { Phone } from "../../domain/Phone";
 import { IFlashDayRepository } from "../repository/FlashDayRepository";
 
@@ -8,15 +9,13 @@ export class UpdateFlashDay {
     const flashDay = {
       flashDayId: input.flashDayId,
       title: input.title,
-      startsAt: input.startsAt ? new Date(input.startsAt) : undefined,
-      endsAt: input.endsAt ? new Date(input.endsAt) : undefined,
+      startsAt: input.startsAt ? dayjs(input.startsAt).toDate() : undefined,
+      endsAt: input.endsAt ? dayjs(input.endsAt).toDate() : undefined,
       phone: input.phone ? new Phone(input.phone) : undefined,
       active: input.active
     }
     await this.flashDayRepository.update(flashDay, input.artistId)
-    return {
-      flashDayId: input.flashDayId
-    }
+    return { flashDayId: input.flashDayId }
   }
 }
 

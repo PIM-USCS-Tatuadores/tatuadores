@@ -52,8 +52,8 @@ test('Deve criar um evento flash day', async () => {
   const tokenCookie = await login("john2@doe.com", "123456")
   const createResponse = await axios.post(`http://localhost:3000/api/v1/flash_days`, {
     title: 'Flash Tattoo #1',
-    startsAt: (new Date(2023, 10, 12)).toISOString(),
-    endsAt: undefined,
+    starts_at: '2023-10-06',
+    ends_at: '2023-10-14',
     phone: '11949729444',
     active: true
   }, {
@@ -66,8 +66,8 @@ test('Deve criar um evento flash day', async () => {
   const flashDay = flashDayResponse.data
   expect(flashDay.id).toBe(flashDayId)
   expect(flashDay.title).toBe('Flash Tattoo #1')
-  expect(flashDay.starts_at).toBe((new Date(2023, 10, 12)).toISOString())
-  expect(flashDay.ends_at).toBe(undefined)
+  expect(flashDay.starts_at).toContain('2023-10-06')
+  expect(flashDay.ends_at).toContain('2023-10-14')
   expect(flashDay.phone).toBe('11949729444')
   expect(flashDay.active).toBe(true)
 })
@@ -77,8 +77,8 @@ test('Deve editar um evento flash day', async () => {
   const tokenCookie = await login("jane@doe.com", "123456")
   const createResponse = await axios.post(`http://localhost:3000/api/v1/flash_days`, {
     title: 'Flash Tattoo #2',
-    startsAt: (new Date(2023, 10, 15)).toISOString(),
-    endsAt: undefined,
+    starts_at: '2023-10-06',
+    ends_at: undefined,
     phone: '11949729444',
     active: true
   }, {
@@ -100,7 +100,7 @@ test('Deve editar um evento flash day', async () => {
   const flashDay = flashDayResponse.data
   expect(flashDay.id).toBe(flashDayId)
   expect(flashDay.title).toBe('Flash Tattoo #6')
-  expect(flashDay.starts_at).toBe((new Date(2023, 10, 15)).toISOString())
+  expect(flashDay.starts_at).toContain('2023-10-06')
   expect(flashDay.ends_at).toBe(undefined)
   expect(flashDay.phone).toBe('11999999999')
   expect(flashDay.active).toBe(false)
@@ -125,8 +125,8 @@ test('Deve trazer todos os eventos flash days de um usuário', async () => {
   const tokenCookie = await login("john4@doe.com", "123456")
   await axios.post(`http://localhost:3000/api/v1/flash_days`, {
     title: 'Flash Tattoo #1',
-    startsAt: (new Date(2023, 10, 12)).toISOString(),
-    endsAt: undefined,
+    starts_at: '2023-10-06',
+    ends_at: undefined,
     phone: '11949729444',
     active: true
   }, {
@@ -136,8 +136,8 @@ test('Deve trazer todos os eventos flash days de um usuário', async () => {
   })
   await axios.post(`http://localhost:3000/api/v1/flash_days`, {
     title: 'Flash Tattoo #2',
-    startsAt: (new Date(2023, 10, 15)).toISOString(),
-    endsAt: undefined,
+    starts_at: '2023-10-08',
+    ends_at: '2023-10-16',
     phone: '11949729444',
     active: false
   }, {
@@ -152,14 +152,15 @@ test('Deve trazer todos os eventos flash days de um usuário', async () => {
     {
       id: expect.any(String),
       title: 'Flash Tattoo #1',
-      starts_at: (new Date(2023, 10, 12)).toISOString(),
+      starts_at: expect.stringContaining('2023-10-06'),
       phone: '11949729444',
       active: true
     },
     {
       id: expect.any(String),
       title: 'Flash Tattoo #2',
-      starts_at: (new Date(2023, 10, 15)).toISOString(),
+      starts_at: expect.stringContaining('2023-10-08'),
+      ends_at: expect.stringContaining('2023-10-16'),
       phone: '11949729444',
       active: false
     }
@@ -171,8 +172,8 @@ test('Deve criar uma arte para um evento flash day', async () => {
   const tokenCookie = await login("john6@doe.com", "123456")
   const flashDayResponse = await axios.post(`http://localhost:3000/api/v1/flash_days`, {
     title: 'Flash Tattoo #1',
-    startsAt: (new Date(2023, 10, 12)).toISOString(),
-    endsAt: undefined,
+    starts_at: '2023-10-08',
+    ends_at: '2023-10-16',
     phone: '11949729444',
     active: true
   }, {
@@ -210,8 +211,8 @@ test('Deve trazer todas as artes de um evento flash day', async () => {
   const tokenCookie = await login("john10@doe.com", "123456")
   const flashDayResponse = await axios.post(`http://localhost:3000/api/v1/flash_days`, {
     title: 'Flash Tattoo #1',
-    startsAt: (new Date(2023, 10, 12)).toISOString(),
-    endsAt: undefined,
+    starts_at: '2023-10-08',
+    ends_at: '2023-10-16',
     phone: '11949729444',
     active: true
   }, {

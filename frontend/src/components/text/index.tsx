@@ -1,9 +1,7 @@
 import { ElementType } from 'react'
 import { ScreenSizeObject } from '@/types/ScreenSize'
 import { CustomElement } from '@/types/CustomElement'
-
 import { getScreenSizesClasses } from '@/utils/screen-sizes-classes'
-
 import style from './style.module.css'
 
 type TextType =

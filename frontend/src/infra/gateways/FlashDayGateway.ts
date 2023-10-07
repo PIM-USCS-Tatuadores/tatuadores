@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { IHttpClient } from '../http/HttpClient';
 
 import {
@@ -30,14 +31,7 @@ export class FlashDayGateway implements IFlashDayGateway {
 
   async create(data: FlashDayDTO, options?: FlashDayGatewayOptions) {
     const endpoint = '/api/v1/flash_days'
-    const body = {
-      title: data.title,
-      startsAt: data.starts_at,
-      endsAt: data.ends_at,
-      phone: data.phone,
-      active: data.active
-    }
-    const response: FlashDayDTO = await this.httpClient.post(endpoint, body, {
+    const response: FlashDayDTO = await this.httpClient.post(endpoint, data, {
       signal: options?.signal,
       headers: Object.assign({}, options?.headers, {
         'Content-Type': 'application/json'
@@ -60,8 +54,8 @@ export class FlashDayGateway implements IFlashDayGateway {
   }
 
   private transformFlashDay(data: FlashDayDTO): FlashDay {
-    const startsAt = new Date(data.starts_at)
-    const endsAt = data.ends_at ? new Date(data.ends_at) : undefined
+    const startsAt = dayjs(data.starts_at).toDate()
+    const endsAt = data.ends_at ? dayjs(data.ends_at).toDate() : undefined
     if (!data.id) throw new Error('Flash day response does not have an valid id')
     return {
       id: data.id,

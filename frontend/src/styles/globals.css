@@ -3,6 +3,7 @@
   --color-lightgray: #f9f9f9;
   --color-black: #222222;
   --color-success: #61af60;
+  --color-error: #d94725;
   --color-warn: #e8b83f;
 
   --color-body-background: var(--color-lightgray);
