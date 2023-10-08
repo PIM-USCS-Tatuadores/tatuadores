@@ -1,4 +1,3 @@
-import { Art } from '../../domain/Art';
 import { IContactRepository } from "../../application/repository/ContactRepository";
 import { Contact } from '../../domain/Contact';
 

@@ -1,4 +1,3 @@
-import { Art } from "../../domain/Art"
 import { Contact } from "../../domain/Contact"
 
 export interface IContactRepository {

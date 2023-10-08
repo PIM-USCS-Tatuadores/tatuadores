@@ -18,6 +18,8 @@ import { UpdateFlashDay } from './application/usecases/UpdateFlashDay'
 import { CreateArt } from './application/usecases/CreateArt'
 import { GetArt } from './application/usecases/GetArt'
 import { GetFlashDayArts } from './application/usecases/GetFlashDayArts'
+import { CreateContact } from './application/usecases/CreateContact'
+import { ContactRepositoryDatabase } from './infra/repository/ContactRepostoryDatabase'
 
 config(process.env.NODE_ENV)
 const app = express()
@@ -33,6 +35,7 @@ const userRepository = new UserRepositoryDatabase(connection)
 const artistRepository = new ArtistRepositoryDatabase(connection)
 const flashDayRepository = new FlashDayRepositoryDatabase(connection)
 const artRepository = new ArtRepositoryDatabase(connection)
+const contactRepository = new ContactRepositoryDatabase(connection)
 
 app.post('/api/v1/artists/register', async (req, res) => {
   try {
@@ -254,6 +257,27 @@ app.get('/api/v1/arts/:artId', async (req, res) => {
     })
   } catch (error: any) {
     res.status(400).json({
+      message: error.message
+    })
+  }
+})
+
+app.post('/api/v1/flash_days/:flashDayId/artId/contact', withAuthMiddleware, async (req, res) => {
+  try {
+    const flashDayId = req.params.flashDayId
+    const usecase = new CreateContact(contactRepository)
+    const output = await usecase.execute({
+      name: req.body.name,
+      email: req.body.email,
+      telephone: req.body.telephone,
+      communicationFlag: req.body.communicationFlag,
+      flashDayId
+    })
+    res.status(201).json({
+      id: output.contactId
+    })
+  } catch (error: any) {
+    res.status(422).json({
       message: error.message
     })
   }

@@ -5,12 +5,12 @@ export class Contact {
     readonly contactId: string,
     readonly name: string,
     readonly email: string,
-    readonly telephone: number,
-    readonly communicationFlag: boolean,
+    readonly phone: number,
+    readonly acceptContact: boolean,
   ) {}
 
-  static create(name: string, email: string, telephone: number, communicationFlag: boolean) {
+  static create(name: string, email: string, phone: number, acceptContact: boolean) {
     const contactId = crypto.randomUUID()
-    return new Contact(contactId, name, email, telephone, communicationFlag)
+    return new Contact(contactId, name, email, phone, acceptContact)
   }
 }

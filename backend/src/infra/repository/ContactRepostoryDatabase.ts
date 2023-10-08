@@ -15,15 +15,11 @@ export class ContactRepositoryDatabase implements IContactRepository {
   }
 
   async save(contact: Contact): Promise<void> {
-    
+    await this.connection.query(`
+      INSERT INTO tattoo.contact (id, art_id, name, email, phone, accept_contact, created_at, updated_at, deleted_at)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $7, $7)
+    `, [contact.contactId, contact.name, contact.email, contact.phone, contact.acceptContact, new Date()])
   }
-
-  // async save(art: Contact): Promise<void> {
-  //   await this.connection.query(`
-  //     INSERT INTO tattoo.art (id, flashday_id, title, description, price, size, href, alt_text, created_at, updated_at)
-  //     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9)
-  //   `, [art.artId, flashDayId, art.title, art.description, art.price, art.size, art.href, art.altText, new Date()])
-  // }
 
   //TODO: voltar aqui 
   private restoreArt(data: ContactDTO) {

@@ -5,7 +5,7 @@ export class CreateArt {
   constructor(readonly contactRepository: IContactRepository) {}
 
   async execute(input: CreateContactInput): Promise<CreateContactOutput> {
-    const contact = Contact.create(input.name, input.email, input.telephone, input.communicationFlag)
+    const contact = Contact.create(input.name, input.email, input.phone, input.acceptContact)
     await this.contactRepository.save(contact)
     return { contactId: contact.contactId }
   }
@@ -14,8 +14,8 @@ export class CreateArt {
 type CreateContactInput = {
   name: string,
   email: string,
-  telephone: number,
-  communicationFlag: boolean
+  phone: number,
+  acceptContact: boolean
 }
 
 type CreateContactOutput = {
