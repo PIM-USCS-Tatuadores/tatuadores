@@ -9,7 +9,6 @@ interface ButtonProps {
 export default function Input({ label, children }: ButtonProps) {
   const child = Children.only(children)
   const props = { className: `${style.input}` }
-
   const input = isValidElement(child) ? cloneElement(child, props) : ''
 
   return (

@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 import { FlashDay } from "../../domain/FlashDay"
 import { IFlashDayRepository } from "../repository/FlashDayRepository"
 
@@ -5,8 +6,8 @@ export class CreateFlashDay {
   constructor(readonly flashDayRepository: IFlashDayRepository) {}
 
   async execute(input: CreateFlashDayInput): Promise<CreateFlashDayOutput> {
-    const startsAt = new Date(input.startsAt)
-    const endsAt = !input.endsAt ? undefined : new Date(input.endsAt)
+    const startsAt = dayjs(input.startsAt).toDate()
+    const endsAt = input.endsAt ? dayjs(input.endsAt).toDate() : undefined
     const flashDay = FlashDay.create(input.title, startsAt, endsAt, input.phone, input.active)
     await this.flashDayRepository.save(flashDay, input.artistId)
     return {

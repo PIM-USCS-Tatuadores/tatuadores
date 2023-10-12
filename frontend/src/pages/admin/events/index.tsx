@@ -9,6 +9,7 @@ import { Injector } from '@/infra/di/Injector'
 import { withSession } from '@/lib/session'
 import { FlashDay, IFlashDayGateway } from '@/infra/gateways/FlashDay'
 import { InferGetServerSidePropsType } from 'next'
+import EmptyState from '@/components/empty-state'
 
 interface EventCardProps {
   event: FlashDay
@@ -83,14 +84,20 @@ export default function Events(props: InferGetServerSidePropsType<typeof getServ
     return () => controller.abort()
   }, [])
 
-  return (
-    <DefaultLayout
-      title={`Olá, ${props.user?.name || 'Usuário'}!`}
-      buttonLabel='Novo evento'
-      buttonUrl='/admin/events/new'
-    >
+  function Feed() {
+    if (!flashDays?.length) {
+      return (
+        <EmptyState
+          icon="💡"
+          title="Não encontramos nenhum evento ainda"
+          message="Comece criando um novo evento"
+        />
+      )
+    }
+
+    return (
       <ul className={style.list}>
-        {flashDays?.map((flashDay: any) => (
+        {flashDays.map((flashDay: any) => (
           <li
             key={flashDay.id}
             className={style.listItem}
@@ -99,6 +106,16 @@ export default function Events(props: InferGetServerSidePropsType<typeof getServ
           </li>
         ))}
       </ul>
+    )
+  }
+
+  return (
+    <DefaultLayout
+      title={`Olá, ${props.user?.name || 'Usuário'}!`}
+      buttonLabel='Novo evento'
+      buttonUrl='/admin/events/new'
+    >
+      <Feed />
     </DefaultLayout>
   )
 }

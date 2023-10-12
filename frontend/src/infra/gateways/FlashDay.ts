@@ -12,7 +12,7 @@ export type FlashDayDTO = {
   ends_at: string,
   phone: string,
   active?: boolean,
-  artist_id: string
+  artist_id?: string
 }
 
 export type UpdateFlashDayDTO = {

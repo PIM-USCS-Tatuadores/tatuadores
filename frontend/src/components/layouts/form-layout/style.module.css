@@ -4,7 +4,7 @@
 
 .formLayoutContainer {
   flex: 1;
-  max-width: clamp(36.8rem, 50%, 48rem);
+  max-width: 36.8rem;
 }
 
 .formLayout.center .formLayoutContainer {
@@ -17,6 +17,7 @@
   }
 
   .formLayoutContainer {
+    max-width: 48rem;
     padding: 4.8rem;
     background-color: var(--color-white);
     border-radius: var(--default-border-radius);

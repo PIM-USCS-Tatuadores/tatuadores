@@ -133,7 +133,14 @@ app.post('/api/v1/flash_days', withAuthMiddleware, async (req, res) => {
   try {
     const artistId = req.user.userId
     const usecase = new CreateFlashDay(flashDayRepository)
-    const output = await usecase.execute({ ...req.body, artistId })
+    const output = await usecase.execute({
+      title: req.body.title,
+      startsAt: req.body.starts_at,
+      endsAt: req.body.ends_at,
+      phone: req.body.phone,
+      active: req.body.active,
+      artistId
+    })
     res.status(201).json({
       flash_day_id: output.flashDayId
     })
@@ -150,7 +157,11 @@ app.patch('/api/v1/flash_days/:flashDayId', withAuthMiddleware, async (req, res)
     const artistId = req.user.userId
     const usecase = new UpdateFlashDay(flashDayRepository)
     const output = await usecase.execute({
-      ...req.body,
+      title: req.body.title,
+      startsAt: req.body.starts_at,
+      endsAt: req.body.ends_at,
+      phone: req.body.phone,
+      active: req.body.active,
       flashDayId,
       artistId
     })
