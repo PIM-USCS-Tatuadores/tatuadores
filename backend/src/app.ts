@@ -191,7 +191,8 @@ app.get('/api/v1/flash_days/:flashDayId', async (req, res) => {
         starts_at: output.startsAt,
         ends_at: output.endsAt,
         phone: output.phone,
-        active: output.active
+        active: output.active,
+        artist_id: output.artistId
       })
     }
   } catch (error: any) {

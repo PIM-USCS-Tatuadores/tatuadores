@@ -72,7 +72,7 @@ export default function EventDetails(props: InferGetServerSidePropsType<typeof g
     )
   }
 
-  const showPath = `/admin/events/${flashDay.id}`
+  const showPath = `/events/${flashDay.id}`
   const editPath = `/admin/events/${flashDay.id}/edit`
 
   return (

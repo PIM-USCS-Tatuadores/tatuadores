@@ -5,7 +5,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 
 export function withSession(
   fn: GetServerSidePropsWithSession,
-  options: WithSessionOptions = { signedIn: false, redirectTo: '/admin' }
+  options: WithSessionOptions = { redirectTo: '/admin' }
 ) {
   const httpClient = new FetchAdapter()
   const authGateway = new AuthGateway(httpClient)
@@ -21,9 +21,12 @@ export function withSession(
       return fn(context, user)
     } catch {
       context.res.setHeader('Set-Cookie', ['token=; Path=/'])
+      if (!options.redirectTo) {
+        return fn(context, undefined)
+      }
       return {
         redirect: {
-          destination: '/admin',
+          destination: options.redirectTo,
           permanent: false,
         }
       }
@@ -37,6 +40,5 @@ type GetServerSidePropsWithSession = (
 ) => Promise<GetServerSidePropsResult<any>>
 
 type WithSessionOptions = {
-  redirectTo: string,
-  signedIn: boolean
+  redirectTo: string
 }

@@ -1,7 +1,7 @@
 import { FlashDay } from "../../domain/FlashDay";
 
 export interface IFlashDayRepository {
-  get(flashDayId: string): Promise<FlashDay>
+  get(flashDayId: string): Promise<FlashDay & { artistId: string }>
   getAllByArtist(artistId: string): Promise<FlashDay[]>
   save(flashDay: FlashDay, artistId: string): Promise<void>
   update(flashDay: PartialFlashDay, artistId: string): Promise<void>

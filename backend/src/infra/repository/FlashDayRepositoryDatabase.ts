@@ -8,11 +8,14 @@ export class FlashDayRepositoryDatabase implements IFlashDayRepository {
 
   async get(flashDayId: string) {
     const [data] = await this.connection.query(`
-      SELECT id, title, starts_at, ends_at, phone, active
+      SELECT id, title, starts_at, ends_at, phone, active, artist_id
       FROM tattoo.flashday
       WHERE id = $1;
     `, [flashDayId])
-    return this.restoreFlashDay(data)
+    return {
+      ...this.restoreFlashDay(data),
+      artistId: data.artist_id
+    }
   }
 
   async getAllByArtist(artistId: string): Promise<FlashDay[]> {

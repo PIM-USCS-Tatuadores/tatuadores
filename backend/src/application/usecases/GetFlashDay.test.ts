@@ -24,5 +24,6 @@ describe('CreateFlashDay', () => {
     expect(output?.endsAt).toBe(flashDayPayload.endsAt.toISOString())
     expect(output?.phone).toBe(flashDayPayload.phone)
     expect(output?.active).toBe(flashDayPayload.active)
+    expect(output?.artistId).toBe(artistId)
   })
 })

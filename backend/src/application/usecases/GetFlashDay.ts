@@ -13,7 +13,8 @@ export class GetFlashDay {
         startsAt: flashDay.startsAt.toISOString(),
         endsAt: flashDay.endsAt?.toISOString(),
         phone: flashDay.phone.value,
-        active: flashDay.active
+        active: flashDay.active,
+        artistId: flashDay.artistId
       }
     }
     return
@@ -30,5 +31,6 @@ type GetFlashDayOutput = {
   startsAt: string,
   endsAt: string | undefined,
   phone: string,
-  active: boolean
+  active: boolean,
+  artistId: string
 }

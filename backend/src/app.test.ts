@@ -48,7 +48,7 @@ test('Deve retornar um token vazio para um usuário inexistente', async () => {
 })
 
 test('Deve criar um evento flash day', async () => {
-  await register("John Doe", "john2@doe.com", "123456")
+  const artistId = await register("John Doe", "john2@doe.com", "123456")
   const tokenCookie = await login("john2@doe.com", "123456")
   const createResponse = await axios.post(`http://localhost:3000/api/v1/flash_days`, {
     title: 'Flash Tattoo #1',
@@ -70,6 +70,7 @@ test('Deve criar um evento flash day', async () => {
   expect(flashDay.ends_at).toContain('2023-10-14')
   expect(flashDay.phone).toBe('11949729444')
   expect(flashDay.active).toBe(true)
+  expect(flashDay.artist_id).toBe(artistId)
 })
 
 test('Deve editar um evento flash day', async () => {

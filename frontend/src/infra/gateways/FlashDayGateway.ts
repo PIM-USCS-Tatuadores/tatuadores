@@ -63,7 +63,8 @@ export class FlashDayGateway implements IFlashDayGateway {
       startsAt,
       endsAt,
       phone: data.phone,
-      active: !!data.active
+      active: !!data.active,
+      artistId: data.artist_id as string
     }
   }
 }

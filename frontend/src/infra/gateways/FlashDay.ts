@@ -30,7 +30,8 @@ export type FlashDay = {
   startsAt: Date,
   endsAt: Date | undefined,
   phone: string,
-  active: boolean
+  active: boolean,
+  artistId: string,
 }
 
 export type FlashDayGatewayOptions = {

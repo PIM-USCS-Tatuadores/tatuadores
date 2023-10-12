@@ -1,12 +1,11 @@
-import { InferGetServerSidePropsType } from 'next'
-import { withSession } from '@/lib/session'
-import { Injector } from '@/infra/di/Injector'
-import { FlashDay, IFlashDayGateway } from '@/infra/gateways/FlashDay'
-import { useEffect, useState } from 'react'
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import DefaultLayout from '@/components/layouts/default-layout'
 import Flexbox from '@/components/flexbox'
 import Text from '@/components/text'
 import style from './style.module.css'
+import { FetchAdapter } from '@/infra/http/FetchAdapter'
+import { FlashDayGateway } from '@/infra/gateways/FlashDayGateway'
+import { withSession } from '@/lib/session'
 
 const arts = [
   ['https://i.pinimg.com/736x/a1/5f/6b/a15f6be371382b419a054ba21c551eb7.jpg', 'R$ 300', '15 cm'],
@@ -47,35 +46,26 @@ function ArtCard(props: any) {
 }
 
 export default function EventDetails(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const flashDayGateway = Injector.inject<IFlashDayGateway>('flashDayGateway')
-  const list = new Array(3 * 6).fill(0).map(() => (
-    Math.floor(Math.random() * arts.length)
-  ))
-  const [flashDay, setFlashDay] = useState<FlashDay>()
+  const { currentUserIsOwner, flashDay, arts } = props
 
-  useEffect(() => {
-    const controller = new AbortController()
-    flashDayGateway.get(props.id, {
-      signal: controller.signal
-    }).then(setFlashDay)
-    return () => controller.abort()
-  }, [])
+  function getActionButton() {
+    if (!currentUserIsOwner)
+      return {}
 
-  if (!flashDay) {
-    return (
-      <div></div>
-    )
+    return {
+      buttonLabel: 'Nova arte',
+      buttonUrl: '#'
+    }
   }
 
   return (
     <DefaultLayout
-      title={flashDay?.name || ''}
-      buttonLabel="Nova arte"
-      buttonUrl="#"
+      title={flashDay.name}
       backButton
+      {...getActionButton()}
     >
       <ul className={style.artGrid}>
-        {list.map((index: number) => (
+        {arts.map((index: number) => (
           <ArtCard
             index={index}
             key={index}
@@ -86,11 +76,35 @@ export default function EventDetails(props: InferGetServerSidePropsType<typeof g
   )
 }
 
-export const getServerSideProps = withSession(async (context) => {
+export const getServerSideProps = withSession(async (context: GetServerSidePropsContext, user) => {
   const id = context.query.id as string
-  return {
-    props: {
-      id
+  const httpClient = new FetchAdapter()
+  const flashDayGateway = new FlashDayGateway(httpClient)
+
+  try {
+    const flashDay = await flashDayGateway.get(id)
+    const currentUserIsOwner = user?.id === flashDay.artistId
+
+    if (flashDay.active || currentUserIsOwner) {
+      return {
+        props: {
+          flashDay: {
+            name: flashDay.name
+          },
+          arts: new Array(3 * 6).fill(0).map(() => (
+            Math.floor(Math.random() * arts.length)
+          )),
+          currentUserIsOwner
+        }
+      }
+    } else {
+      return {
+        notFound: true
+      }
+    }
+  } catch {
+    return {
+      notFound: true
     }
   }
-})
+}, { redirectTo: '' })

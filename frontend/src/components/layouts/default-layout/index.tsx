@@ -12,7 +12,7 @@ import style from './style.module.css'
 
 interface DefaultLayoutProps {
   title: string,
-  buttonLabel: string,
+  buttonLabel?: string,
   buttonUrl?: string,
   buttonAction?: () => void,
   buttonLoading?: boolean,
@@ -58,23 +58,25 @@ export default function DefaultLayout(props: DefaultLayoutProps) {
           {props.children}
         </div>
 
-        <Button
-          loading={props.buttonLoading}
-          type="secondary"
-        >
-          {props.buttonAction ?
-            <button
-              type="button"
-              onClick={props.buttonAction}
-            >
-              { props.buttonLabel }
-            </button>
-            :
-            <a href={props.buttonUrl}>
-              {props.buttonLabel}
-            </a>
-          }
-        </Button>
+        {props.buttonLabel &&
+          <Button
+            loading={props.buttonLoading}
+            type="secondary"
+          >
+            {props.buttonAction ?
+              <button
+                type="button"
+                onClick={props.buttonAction}
+              >
+                {props.buttonLabel}
+              </button>
+              :
+              <a href={props.buttonUrl}>
+                {props.buttonLabel}
+              </a>
+            }
+          </Button>
+        }
       </main>
     </BaseLayout>
   )
