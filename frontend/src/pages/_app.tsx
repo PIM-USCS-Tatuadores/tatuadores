@@ -8,6 +8,7 @@ import { FetchAdapter } from '@/infra/http/FetchAdapter'
 import { ToastContainer } from 'react-toastify'
 import type { AppProps } from 'next/app'
 import { Roboto } from 'next/font/google'
+import { FileStorageGateway } from '@/infra/gateways/FileStorageGateway'
 
 const roboto = Roboto({
   weight: ['400', '700'],
@@ -19,6 +20,7 @@ function App({ Component, pageProps }: AppProps) {
   const http = new FetchAdapter()
   Provider.provide('authGateway', new AuthGateway(http))
   Provider.provide('flashDayGateway', new FlashDayGateway(http))
+  Provider.provide('fileStorageGateway', new FileStorageGateway())
 
   return (
     <div

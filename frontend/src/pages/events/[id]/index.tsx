@@ -17,7 +17,11 @@ const arts = [
 ]
 
 function ArtCard(props: any) {
-  const [imagePath, price, size] = arts[props.index]
+  const { href, price, size } = props
+  const formatPrice = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  })
 
   return (
     <Flexbox
@@ -26,7 +30,7 @@ function ArtCard(props: any) {
       gap={{ xs: 'small' }}
       className={style.artItem}
     >
-      <img src={imagePath} />
+      <img src={href} />
 
       <Flexbox
         direction={{ xs: 'row' }}
@@ -34,11 +38,11 @@ function ArtCard(props: any) {
         alignItems={{ xs: 'center' }}
       >
         <Text types={{ xs: 'body-1-bold', md: 'subtitle' }}>
-          {price}
+          {formatPrice.format(price)}
         </Text>
 
         <Text types={{ xs: 'body-2', md: 'body-2' }}>
-          {size}
+          {size} cm
         </Text>
       </Flexbox>
     </Flexbox>
@@ -54,7 +58,7 @@ export default function EventDetails(props: InferGetServerSidePropsType<typeof g
 
     return {
       buttonLabel: 'Nova arte',
-      buttonUrl: '#'
+      buttonUrl: `/admin/events/${props.id}/arts/new`
     }
   }
 
@@ -65,10 +69,10 @@ export default function EventDetails(props: InferGetServerSidePropsType<typeof g
       {...getActionButton()}
     >
       <ul className={style.artGrid}>
-        {arts.map((index: number) => (
+        {arts.map((art: any) => (
           <ArtCard
-            index={index}
-            key={index}
+            key={art.id}
+            {...art}
           />
         ))}
       </ul>
@@ -82,18 +86,19 @@ export const getServerSideProps = withSession(async (context: GetServerSideProps
   const flashDayGateway = new FlashDayGateway(httpClient)
 
   try {
-    const flashDay = await flashDayGateway.get(id)
+    const [flashDay, arts] = await Promise.all([
+      await flashDayGateway.get(id),
+      await flashDayGateway.getArts(id)
+    ])
     const currentUserIsOwner = user?.id === flashDay.artistId
-
     if (flashDay.active || currentUserIsOwner) {
       return {
         props: {
+          id,
           flashDay: {
             name: flashDay.name
           },
-          arts: new Array(3 * 6).fill(0).map(() => (
-            Math.floor(Math.random() * arts.length)
-          )),
+          arts,
           currentUserIsOwner
         }
       }

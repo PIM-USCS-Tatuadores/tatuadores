@@ -1,5 +1,5 @@
 .baseLayout {
-  height: 100vh;
+  min-height: 100vh;
   padding: 3.2rem 2.4rem;
 }
 

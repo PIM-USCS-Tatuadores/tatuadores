@@ -59,7 +59,7 @@ export default function EventsNew() {
 
   function pushUpdateEventErrorFeedback() {
     toast('Ocorreu um erro ao cadastrar, tente novamente!', {
-      type: 'success',
+      type: 'error',
       theme: 'colored',
       position: 'top-right'
     })

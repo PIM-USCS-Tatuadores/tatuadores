@@ -2,6 +2,9 @@ import dayjs from 'dayjs';
 import { IHttpClient } from '../http/HttpClient';
 
 import {
+  Art,
+  ArtDTO,
+  CreateArtDTO,
   FlashDay,
   FlashDayDTO,
   FlashDayGatewayOptions,
@@ -44,6 +47,38 @@ export class FlashDayGateway implements IFlashDayGateway {
   async update(id: string, data: UpdateFlashDayDTO, options?: FlashDayGatewayOptions) {
     const endpoint = `/api/v1/flash_days/${id}`
     const response = await this.httpClient.patch(endpoint, data, {
+      signal: options?.signal,
+      headers: Object.assign({}, options?.headers, {
+        'Content-Type': 'application/json'
+      }),
+      credentials: 'include'
+    })
+    return response
+  }
+
+  async getArts(id: string, options?: FlashDayGatewayOptions | undefined): Promise<Art[]> {
+    const endpoint = `/api/v1/flash_days/${id}/arts`
+    const response: ArtDTO[] = await this.httpClient.get(endpoint, {
+      signal: options?.signal,
+      headers: Object.assign({}, options?.headers, {
+        'Content-Type': 'application/json'
+      }),
+      credentials: 'include'
+    })
+    return response.map((art) => ({
+      id: art.id,
+      title: art.title,
+      description: art.description,
+      price: art.price,
+      size: art.size,
+      href: art.href,
+      altText: art.alt_text
+    }))
+  }
+
+  async createArt(id: string, data: CreateArtDTO, options?: FlashDayGatewayOptions | undefined): Promise<any> {
+    const endpoint = `/api/v1/flash_days/${id}/arts`
+    const response = await this.httpClient.post(endpoint, data, {
       signal: options?.signal,
       headers: Object.assign({}, options?.headers, {
         'Content-Type': 'application/json'
