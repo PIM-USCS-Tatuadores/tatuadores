@@ -5,12 +5,17 @@ import { IConnection } from "../database/connection";
 export class ArtRepositoryDatabase implements IArtRepository {
   constructor(readonly connection: IConnection) {}
 
-  async get(artId: string): Promise<Art> {
+  async get(artId: string) {
     const [data] = await this.connection.query(`
-      SELECT id, title, description, price, size, href, alt_text FROM tattoo.art
+      SELECT id, title, description, price, size, href, alt_text, flashday_id
+      FROM tattoo.art
       WHERE id = $1
     `, [artId])
-    return this.restoreArt(data)
+
+    return {
+      ...this.restoreArt(data),
+      flashDayId: data.flashday_id
+    }
   }
 
   async getAllByFlashDay(flashDayId: string): Promise<Art[]> {

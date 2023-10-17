@@ -205,6 +205,7 @@ test('Deve criar uma arte para um evento flash day', async () => {
   expect(art.size).toBe(12)
   expect(art.href).toBe('https://cdn.awsli.com.br/600x1000/779/779540/produto/1562181402876970705.jpg')
   expect(art.alt_text).toBe('imagem de um leão')
+  expect(art.flash_day_id).toBe(flashDayId)
 })
 
 test('Deve trazer todas as artes de um evento flash day', async () => {

@@ -260,12 +260,14 @@ app.get('/api/v1/arts/:artId', async (req, res) => {
       })
     }
     return res.status(200).json({
+      id: output.artId,
       title: output.title,
       description: output.description,
       price: output.price,
       size: output.size,
       href: output.href,
-      alt_text: output.altText
+      alt_text: output.altText,
+      flash_day_id: output.flashDayId
     })
   } catch (error: any) {
     res.status(400).json({

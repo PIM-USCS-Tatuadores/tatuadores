@@ -4,13 +4,26 @@
   gap: 2.4rem;
 }
 
-.artItem img {
+.artLink {
+  cursor: pointer;
+}
+
+.artImage {
   display: block;
   width: 100%;
+  opacity: .8;
   aspect-ratio: 2 / 3;
   object-fit: cover;
-  box-shadow: var(--hover-drop-shadow);
+  box-shadow: var(--default-drop-shadow);
   border-radius: .5rem;
+  transition: .2s ease all;
+}
+
+@media (hover: hover) {
+  .artLink:hover .artImage {
+    opacity: 1;
+    box-shadow: var(--hover-drop-shadow);
+  }
 }
 
 @media screen and (min-width: 600px) {

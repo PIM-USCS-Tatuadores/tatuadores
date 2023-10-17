@@ -3,6 +3,7 @@ export interface IFlashDayGateway {
   getAllById(id: string, options?: FlashDayGatewayOptions): Promise<FlashDay[]>;
   create(data: FlashDayDTO, options?: FlashDayGatewayOptions): Promise<any>;
   update(id: string, data: UpdateFlashDayDTO, options?: FlashDayGatewayOptions): Promise<any>;
+  getArt(id: string, options?: FlashDayGatewayOptions): Promise<Art>;
   getArts(id: string, options?: FlashDayGatewayOptions): Promise<Art[]>;
   createArt(id: string, data: CreateArtDTO, options?: FlashDayGatewayOptions): Promise<any>;
 }
@@ -42,7 +43,8 @@ export type ArtDTO = {
   price: number,
   size: number,
   href: string,
-  alt_text: string
+  alt_text: string,
+  flash_day_id: string | undefined
 }
 
 export type Art = {
@@ -52,7 +54,8 @@ export type Art = {
   price: number,
   size: number,
   href: string,
-  altText: string
+  altText: string,
+  flashDayId?: string
 }
 
 export type FlashDay = {

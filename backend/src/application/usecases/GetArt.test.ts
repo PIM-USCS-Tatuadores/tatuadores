@@ -26,5 +26,6 @@ describe('CreateFlashDay', () => {
     expect(output?.size).toBe(artPayload.size)
     expect(output?.href).toBe(artPayload.href)
     expect(output?.altText).toBe(artPayload.altText)
+    expect(output?.flashDayId).toBe(flashDayId)
   })
 })

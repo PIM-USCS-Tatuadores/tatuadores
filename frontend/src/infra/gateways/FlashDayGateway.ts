@@ -56,6 +56,18 @@ export class FlashDayGateway implements IFlashDayGateway {
     return response
   }
 
+  async getArt(id: string, options?: FlashDayGatewayOptions | undefined): Promise<Art> {
+    const endpoint = `/api/v1/arts/${id}`
+    const response: ArtDTO = await this.httpClient.get(endpoint, {
+      signal: options?.signal,
+      headers: Object.assign({}, options?.headers, {
+        'Content-Type': 'application/json'
+      }),
+      credentials: 'include'
+    })
+    return this.transformArt(response)
+  }
+
   async getArts(id: string, options?: FlashDayGatewayOptions | undefined): Promise<Art[]> {
     const endpoint = `/api/v1/flash_days/${id}/arts`
     const response: ArtDTO[] = await this.httpClient.get(endpoint, {
@@ -65,15 +77,7 @@ export class FlashDayGateway implements IFlashDayGateway {
       }),
       credentials: 'include'
     })
-    return response.map((art) => ({
-      id: art.id,
-      title: art.title,
-      description: art.description,
-      price: art.price,
-      size: art.size,
-      href: art.href,
-      altText: art.alt_text
-    }))
+    return response.map((art) => this.transformArt(art))
   }
 
   async createArt(id: string, data: CreateArtDTO, options?: FlashDayGatewayOptions | undefined): Promise<any> {
@@ -86,6 +90,19 @@ export class FlashDayGateway implements IFlashDayGateway {
       credentials: 'include'
     })
     return response
+  }
+
+  private transformArt(data: ArtDTO) {
+    return {
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      price: data.price,
+      size: data.size,
+      href: data.href,
+      altText: data.alt_text,
+      flashDayId: data.flash_day_id || null
+    }
   }
 
   private transformFlashDay(data: FlashDayDTO): FlashDay {

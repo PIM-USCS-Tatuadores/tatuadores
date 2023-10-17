@@ -13,7 +13,8 @@ export class GetArt {
         price: art.price,
         size: art.size,
         href: art.href,
-        altText: art.altText
+        altText: art.altText,
+        flashDayId: art.flashDayId
       }
     }
     return
@@ -31,5 +32,6 @@ type GetArtOutput = {
   price: number,
   size: number,
   href: string,
-  altText: string | undefined
+  altText: string | undefined,
+  flashDayId: string
 }
