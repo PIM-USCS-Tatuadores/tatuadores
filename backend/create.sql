@@ -22,7 +22,7 @@ CREATE TABLE tattoo.artist (
 
 CREATE TABLE tattoo.flashday (
   id UUID PRIMARY KEY,
-  artist_id UUID not null,
+  artist_id UUID NOT NULL,
   title TEXT NOT NULL,
   starts_at TIMESTAMP WITH TIME ZONE NOT NULL,
   ends_at TIMESTAMP WITH TIME ZONE,
@@ -70,7 +70,7 @@ CREATE TABLE tattoo.contact (
   art_id UUID NOT NULL,
   name TEXT NOT NULL,
   email TEXT NOT NULL,
-  phone TEXT NULL,
+  phone TEXT NOT NULL,
   accept_contact BOOLEAN NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL,

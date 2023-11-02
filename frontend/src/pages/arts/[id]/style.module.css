@@ -1,0 +1,50 @@
+.artWrapper {
+  display: grid;
+  gap: 3.2rem;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+@media screen and (min-width: 786px) {
+  .artWrapper {
+    gap: 4rem;
+    height: 100%;
+    align-content: center;
+    justify-content: center;
+    grid-template-columns: repeat(2, max(435px));
+  }
+}
+
+.artContent {
+  padding: 1.6rem 0;
+}
+
+.artContent .artContent {
+  padding: 0;
+}
+
+@media screen and (max-width: 785px) {
+  .artContent {
+    display: contents;
+  }
+}
+
+.artTitle {
+  order: -1;
+}
+
+@media screen and (min-width: 786px) {
+  .artTitle {
+    order: 0;
+  }
+}
+
+.artImage {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: top;
+  box-shadow: var(--default-drop-shadow);
+  border-radius: .5rem;
+}

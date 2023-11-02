@@ -1,17 +1,14 @@
 import { ReactNode } from 'react'
 import { useRouter } from 'next/router'
-
 import BaseLayout from '../base-layout'
-
 import Text from '@/components/text'
 import Button from '@/components/button'
 import Flexbox from '@/components/flexbox'
 import Icon from '@/components/icon'
-
 import style from './style.module.css'
 
 interface DefaultLayoutProps {
-  title: string,
+  title?: string,
   buttonLabel?: string,
   buttonUrl?: string,
   buttonAction?: () => void,
@@ -46,12 +43,14 @@ export default function DefaultLayout(props: DefaultLayoutProps) {
             </Button>
           }
 
-          <Text
-            tagName="h1"
-            types={{ xs: 'title', md: 'display' }}
-          >
-            {props.title}
-          </Text>
+          {props.title &&
+            <Text
+              tagName="h1"
+              types={{ xs: 'title', md: 'display' }}
+            >
+              {props.title}
+            </Text>
+          }
         </Flexbox>
 
         <div className={style.defaultLayoutContainer}>
