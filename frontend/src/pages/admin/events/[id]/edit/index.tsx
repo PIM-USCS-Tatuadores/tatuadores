@@ -88,11 +88,8 @@ export default function EventsEdit(props: InferGetServerSidePropsType<typeof get
   }
 
   if (!flashDay) {
-    return (
-      <div></div>
-    )
+    return
   }
-
 
   const startsAt = dayjs(flashDay.startsAt).format('YYYY-MM-DD')
   const endsAt = flashDay.endsAt ? dayjs(flashDay.endsAt).format('YYYY-MM-DD') : undefined

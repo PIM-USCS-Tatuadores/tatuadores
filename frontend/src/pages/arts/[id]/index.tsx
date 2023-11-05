@@ -18,11 +18,11 @@ export default function ArtsShow(props: InferGetServerSidePropsType<typeof getSe
   })
 
   function navigateToEditArt() {
-    console.log('EDIT ART')
+    router.push(`/admin/arts/${id}/edit`)
   }
 
   function navigateToContactForm() {
-    router.push(`/arts/${id}/contact/new`)
+    router.push(`/arts/${id}/contacts/new`)
   }
 
   return (

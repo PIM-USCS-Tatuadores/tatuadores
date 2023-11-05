@@ -7,12 +7,14 @@ import FormLayout from '@/components/layouts/form-layout'
 import Flexbox from '@/components/flexbox'
 import Button from '@/components/button'
 import Input from '@/components/input'
+import Text from '@/components/text'
 import ErrorMessage from '@/components/error-message'
 
 const schema = z.object({
   name: z.string().min(3, { message: 'O nome deve conter pelo menos 3 caracteres' }),
   email: z.string().email({ message: 'Email inválido' }),
-  phone: z.string().min(14, { message: 'Número de telefone inválido' })
+  phone: z.string().min(14, { message: 'Número de telefone inválido' }),
+  agreed: z.boolean({ invalid_type_error: 'Deve ser um boleano' })
 })
 
 type ContactFormState = z.infer<typeof schema>
@@ -30,8 +32,8 @@ export default function ContactsNew(props: InferGetServerSidePropsType<typeof ge
     resolver: zodResolver(schema)
   })
 
-  function createContact() {
-    console.log('CREATE CONTACT')
+  function createContact(data: ContactFormState) {
+    console.log('CREATE CONTACT', data)
   }
 
   return (
@@ -100,6 +102,27 @@ export default function ContactsNew(props: InferGetServerSidePropsType<typeof ge
           </Input>
 
           <ErrorMessage message={errors.phone?.message} />
+        </Flexbox>
+
+        <Flexbox
+          tagName="div"
+          direction={{ xs: 'row' }}
+          gap={{ xs: 'extrasmall' }}
+          alignItems={{ xs: 'center' }}
+        >
+          <input
+            type="checkbox"
+            id="agreed"
+            {...register('agreed')}
+          />
+
+          <Text
+            tagName="label"
+            htmlFor="agreed"
+            types={{ xs: 'body-2' }}
+          >
+            Desejo receber comunicações futuras
+          </Text>
         </Flexbox>
 
         <Button type='secondary'>

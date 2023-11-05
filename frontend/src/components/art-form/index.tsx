@@ -83,7 +83,7 @@ export default function ArtForm(props: ArtFormProps) {
         gap={{ xs: 'small' }}
         style={{ textAlign: 'center' }}
       >
-        <ImageInput>
+        <ImageInput url={props.imageUrl}>
           <input
             id="image"
             type='file'

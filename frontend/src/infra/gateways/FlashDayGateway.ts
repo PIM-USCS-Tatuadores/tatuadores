@@ -9,6 +9,7 @@ import {
   FlashDayDTO,
   FlashDayGatewayOptions,
   IFlashDayGateway,
+  UpdateArtDTO,
   UpdateFlashDayDTO
 } from './FlashDay'
 
@@ -92,7 +93,11 @@ export class FlashDayGateway implements IFlashDayGateway {
     return response
   }
 
-  private transformArt(data: ArtDTO) {
+  async updateArt(id: string, data: UpdateArtDTO, options?: FlashDayGatewayOptions | undefined): Promise<any> {
+    console.log(id, data, options);
+  }
+
+  private transformArt(data: ArtDTO): Art {
     return {
       id: data.id,
       title: data.title,
