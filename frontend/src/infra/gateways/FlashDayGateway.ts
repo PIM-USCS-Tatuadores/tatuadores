@@ -94,7 +94,15 @@ export class FlashDayGateway implements IFlashDayGateway {
   }
 
   async updateArt(id: string, data: UpdateArtDTO, options?: FlashDayGatewayOptions | undefined): Promise<any> {
-    console.log(id, data, options);
+    const endpoint = `/api/v1/arts/${id}`
+    const response = await this.httpClient.patch(endpoint, data, {
+      signal: options?.signal,
+      headers: Object.assign({}, options?.headers, {
+        'Content-Type': 'application/json'
+      }),
+      credentials: 'include'
+    })
+    return response
   }
 
   private transformArt(data: ArtDTO): Art {

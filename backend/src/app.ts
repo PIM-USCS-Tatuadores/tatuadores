@@ -18,6 +18,7 @@ import { UpdateFlashDay } from './application/usecases/UpdateFlashDay'
 import { CreateArt } from './application/usecases/CreateArt'
 import { GetArt } from './application/usecases/GetArt'
 import { GetFlashDayArts } from './application/usecases/GetFlashDayArts'
+import { UpdateArt } from './application/usecases/UpdateArt'
 
 config(process.env.NODE_ENV)
 const app = express()
@@ -271,6 +272,31 @@ app.get('/api/v1/arts/:artId', async (req, res) => {
     })
   } catch (error: any) {
     res.status(400).json({
+      message: error.message
+    })
+  }
+})
+
+app.patch('/api/v1/arts/:artId', withAuthMiddleware, async (req, res) => {
+  try {
+    const artId = req.params.artId
+    const artistId = req.user.userId
+    const usecase = new UpdateArt(artRepository)
+    const output = await usecase.execute({
+      artId,
+      title: req.body.title,
+      description: req.body.description,
+      price: req.body.price,
+      size: req.body.size,
+      href: req.body.href,
+      altText: req.body.alt,
+      artistId
+    })
+    res.status(200).json({
+      art_id: output.artId
+    })
+  } catch (error: any) {
+    res.status(422).json({
       message: error.message
     })
   }

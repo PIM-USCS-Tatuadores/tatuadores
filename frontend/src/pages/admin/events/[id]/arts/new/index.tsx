@@ -55,7 +55,7 @@ export default function ArtsNew(props: InferGetServerSidePropsType<typeof getSer
         size: state.size,
         href: response.url
       })
-      pushCreateEventSuccessFeedback()
+      pushCreateArtSuccessFeedback()
       redirectToEventsPage()
     } catch(error: any) {
       pushUpdateEventErrorFeedback()
@@ -64,7 +64,7 @@ export default function ArtsNew(props: InferGetServerSidePropsType<typeof getSer
     }
   }
 
-  function pushCreateEventSuccessFeedback() {
+  function pushCreateArtSuccessFeedback() {
     toast('Arte criada com sucesso!', {
       type: 'success',
       theme: 'colored',
@@ -81,7 +81,7 @@ export default function ArtsNew(props: InferGetServerSidePropsType<typeof getSer
   }
 
   function redirectToEventsPage() {
-    router.push(`/events/${props.id}`)
+    router.replace(`/events/${props.id}`)
   }
 
   return (

@@ -27,13 +27,20 @@ export class FlashDayRepositoryMemory implements IFlashDayRepository {
 
   async update(flashDay: PartialFlashDay, artistId: string): Promise<void> {
     const actualFlashDay = this.flashDays.get(flashDay.flashDayId)
-    this.flashDays.set(flashDay.flashDayId, {
-      title: flashDay.title || actualFlashDay.title,
-      startsAt: flashDay.startsAt || actualFlashDay.startsAt,
-      endsAt: flashDay.endsAt || actualFlashDay.endsAt,
-      phone: flashDay.phone || actualFlashDay.phone,
-      active: flashDay.active === undefined ? actualFlashDay.active : flashDay.active,
-      artistId
-    })
+    const normalizedFlashDay = this.removeUndefined(flashDay)
+    this.flashDays.set(flashDay.flashDayId, Object.assign({},
+      actualFlashDay,
+      normalizedFlashDay,
+      { artistId }
+    ))
+  }
+
+  private removeUndefined(object: Record<string, any>) {
+    return Object.keys(object).reduce((obj, key) => {
+      if (object[key] !== undefined) {
+        return { ...obj, [key]: object[key] }
+      }
+      return obj
+    }, {})
   }
 }

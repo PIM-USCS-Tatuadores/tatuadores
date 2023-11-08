@@ -1,5 +1,5 @@
 import { Art } from '../../domain/Art';
-import { IArtRepository } from "../../application/repository/ArtRepository";
+import { IArtRepository, PartialArt } from "../../application/repository/ArtRepository";
 import { IConnection } from "../database/connection";
 
 export class ArtRepositoryDatabase implements IArtRepository {
@@ -28,13 +28,35 @@ export class ArtRepositoryDatabase implements IArtRepository {
 
   async save(art: Art, flashDayId: string, artistId: string): Promise<void> {
     await this.connection.transaction(async (transaction) => {
-      await transaction.one(`
+      const data = await transaction.one(`
         SELECT id FROM tattoo.flashday WHERE id = $1 AND artist_id = $2
       `, [flashDayId, artistId])
       await transaction.query(`
         INSERT INTO tattoo.art (id, flashday_id, title, description, price, size, href, alt_text, created_at, updated_at)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9)
-      `, [art.artId, flashDayId, art.title, art.description, art.price, art.size, art.href, art.altText, new Date()])
+      `, [art.artId, data.id, art.title, art.description, art.price, art.size, art.href, art.altText, new Date()])
+    })
+  }
+
+  async update(art: PartialArt, artistId: string): Promise<void> {
+    await this.connection.transaction(async (transaction) => {
+      const data = await transaction.one(`
+        SELECT art.id FROM tattoo.art as art
+        INNER JOIN tattoo.flashday as flashday ON art.flashday_id = flashday.id
+        INNER JOIN tattoo.artist as artist ON flashday.artist_id = artist.id
+        WHERE art.id = $1 AND flashday.artist_id = $2
+      `, [art.artId, artistId])
+      await transaction.query(`
+        UPDATE tattoo.art SET
+          title = COALESCE($1, title),
+          description = COALESCE($2, description),
+          price = COALESCE($3, price),
+          size = COALESCE($4, size),
+          href = COALESCE($5, href),
+          alt_text = COALESCE($6, alt_text),
+          updated_at = $7
+        WHERE id = $8;
+      `, [art.title, art.description, art.price, art.size, art.href, art.altText, new Date(), data.id])
     })
   }
 

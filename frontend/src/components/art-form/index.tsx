@@ -28,7 +28,7 @@ interface ArtFormProps {
   onSubmit: (state: any) => void
 }
 
-function maskMoney(value: string) {
+function maskMoney(value: string | number) {
   return VMasker.toMoney(value, {
     precision: 2,
     separator: ',',
@@ -44,6 +44,7 @@ function maskSize(value: string) {
 export default function ArtForm(props: ArtFormProps) {
   const isEditForm = !!props.id
   const { onSubmit: onSubmitHandler, loading = false } = props
+  const price = parseInt(props.price || '0', 10) * 100
   const {
     register,
     handleSubmit,
@@ -52,7 +53,7 @@ export default function ArtForm(props: ArtFormProps) {
     resolver: zodResolver(props.validationSchema),
     defaultValues: {
       title: props.title,
-      price: maskMoney(props.price || ''),
+      price: maskMoney(price),
       size: maskSize(props.size || ''),
       description: props.description
     }

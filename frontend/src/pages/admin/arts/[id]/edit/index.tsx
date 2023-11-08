@@ -11,13 +11,12 @@ import FormLayout from '@/components/layouts/form-layout'
 import ArtForm from '@/components/art-form'
 
 const MAX_FILE_SIZE_MB = 5 * 1024 * 1024
-const ACCEPTED_FILE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
+const ACCEPTED_FILE_TYPES = ["", "image/jpeg", "image/jpg", "image/png", "image/webp"]
 
 const schema = z.object({
   title: z.string()
     .min(3, { message: 'O título deve conter pelo menos 3 caracteres' }),
   image: z.any()
-    .refine((files) => !!files.length, { message: 'A imagem é obrigatória' })
     .refine((files) => {
       const size = files?.[0]?.size || 0
       return size <= MAX_FILE_SIZE_MB
@@ -67,16 +66,16 @@ export default function ArtsNew(props: InferGetServerSidePropsType<typeof getSer
         size: state.size,
         href: imageUpload?.url
       })
-      pushCreateEventSuccessFeedback()
-      redirectToEventsPage()
+      pushUpdateArtSuccessFeedback()
+      redirectToArtsPage()
     } catch(error: any) {
-      pushUpdateEventErrorFeedback()
+      pushUpdateArtErrorFeedback()
     } finally {
       setIsCreatingEvent(false)
     }
   }
 
-  function pushCreateEventSuccessFeedback() {
+  function pushUpdateArtSuccessFeedback() {
     toast('Arte editada com sucesso!', {
       type: 'success',
       theme: 'colored',
@@ -84,7 +83,7 @@ export default function ArtsNew(props: InferGetServerSidePropsType<typeof getSer
     })
   }
 
-  function pushUpdateEventErrorFeedback() {
+  function pushUpdateArtErrorFeedback() {
     toast('Ocorreu um erro ao editar, tente novamente!', {
       type: 'error',
       theme: 'colored',
@@ -92,8 +91,8 @@ export default function ArtsNew(props: InferGetServerSidePropsType<typeof getSer
     })
   }
 
-  function redirectToEventsPage() {
-    router.push(`/events/${props.id}`)
+  function redirectToArtsPage() {
+    router.replace(`/arts/${props.id}`)
   }
 
   if (!art) {
