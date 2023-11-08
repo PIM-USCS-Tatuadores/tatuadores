@@ -113,7 +113,6 @@ export const getServerSideProps = withSession(async (context, user) => {
       }
     }
   } catch (error) {
-    console.log(error)
     return {
       notFound: true
     }

@@ -1,5 +1,6 @@
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { useState } from "react";
 import { z } from 'zod'
+import { InferGetServerSidePropsType } from "next";
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import VMasker from 'vanilla-masker'
@@ -9,6 +10,13 @@ import Button from '@/components/button'
 import Input from '@/components/input'
 import Text from '@/components/text'
 import ErrorMessage from '@/components/error-message'
+import { Injector } from "@/infra/di/Injector";
+import { IFlashDayGateway } from "@/infra/gateways/FlashDay";
+import { toast } from "react-toastify";
+import { withSession } from "@/lib/session";
+import { FetchAdapter } from "@/infra/http/FetchAdapter";
+import { FlashDayGateway } from "@/infra/gateways/FlashDayGateway";
+import { useRouter } from "next/router";
 
 const schema = z.object({
   name: z.string().min(3, { message: 'O nome deve conter pelo menos 3 caracteres' }),
@@ -24,6 +32,9 @@ function maskPhone(value: string) {
 }
 
 export default function ContactsNew(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const router = useRouter()
+  const flashDayGateway = Injector.inject('flashDayGateway') as IFlashDayGateway
+  const [isCreatingContact, setIsCreatingContact] = useState(false)
   const {
     register,
     handleSubmit,
@@ -32,8 +43,48 @@ export default function ContactsNew(props: InferGetServerSidePropsType<typeof ge
     resolver: zodResolver(schema)
   })
 
-  function createContact(data: ContactFormState) {
-    console.log('CREATE CONTACT', data)
+  async function createContact(state: ContactFormState) {
+    try {
+      setIsCreatingContact(true)
+      await flashDayGateway.createContact(props.id, {
+        name: state.name,
+        email: state.email,
+        phone: state.phone,
+        acceptContact: state.agreed
+      })
+      pushCreateContactSuccessFeedback()
+      sendWhatsAppMessage()
+      redirectToFlashDayPage()
+    } catch {
+      pushCreateContactErrorFeedback()
+      setIsCreatingContact(false)
+    }
+  }
+
+  function pushCreateContactSuccessFeedback() {
+    toast('Contato criado com sucesso!', {
+      type: 'success',
+      theme: 'colored',
+      position: 'top-right'
+    })
+  }
+
+  function pushCreateContactErrorFeedback() {
+    toast('Ocorreu um erro ao entrar em contato, tente novamente!', {
+      type: 'error',
+      theme: 'colored',
+      position: 'top-right'
+    })
+  }
+
+  function redirectToFlashDayPage() {
+    router.push(`/events/${props.flashDay.id}`)
+  }
+
+  function sendWhatsAppMessage() {
+    const url = new URL(`/55${props.flashDay.phone}`, 'https://wa.me')
+    url.searchParams.set('text', `Olá, tudo bem?\n\nGostaria de marcar um horário para fazer a tatuagem ${props.art.title} do evento ${props.flashDay.name}!\n\nValeu!`)
+    window.open(url.href, '_blank')
   }
 
   return (
@@ -125,7 +176,10 @@ export default function ContactsNew(props: InferGetServerSidePropsType<typeof ge
           </Text>
         </Flexbox>
 
-        <Button type='secondary'>
+        <Button
+          type='secondary'
+          loading={isCreatingContact}
+        >
           <button type="submit">
             Mandar mensagem
           </button>
@@ -135,12 +189,39 @@ export default function ContactsNew(props: InferGetServerSidePropsType<typeof ge
   )
 }
 
-export function getServerSideProps(context: GetServerSidePropsContext) {
+export const getServerSideProps = withSession(async (context, user) => {
   const id = context.query.id as string
+  const httpClient = new FetchAdapter()
+  const flashDayGateway = new FlashDayGateway(httpClient)
 
-  return {
-    props: {
-      id
+  try {
+    const art = await flashDayGateway.getArt(id)
+    const flashDay = await flashDayGateway.get(art.flashDayId as string)
+    const currentUserIsOwner = user?.id === flashDay.artistId
+
+    if (currentUserIsOwner) {
+      return {
+        notFound: true
+      }
+    }
+
+    return {
+      props: {
+        id,
+        art: {
+          id: art.id,
+          title: art.title
+        },
+        flashDay: {
+          id: flashDay.id,
+          name: flashDay.name,
+          phone: flashDay.phone
+        }
+      }
+    }
+  } catch (error) {
+    return {
+      notFound: true
     }
   }
-}
+}, { redirectTo: '' })

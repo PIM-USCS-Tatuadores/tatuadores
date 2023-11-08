@@ -5,6 +5,7 @@ import {
   Art,
   ArtDTO,
   CreateArtDTO,
+  CreateContactDTO,
   FlashDay,
   FlashDayDTO,
   FlashDayGatewayOptions,
@@ -103,6 +104,10 @@ export class FlashDayGateway implements IFlashDayGateway {
       credentials: 'include'
     })
     return response
+  }
+
+  createContact(id: string, data: CreateContactDTO, options?: FlashDayGatewayOptions | undefined): Promise<any> {
+    return Promise.resolve()
   }
 
   private transformArt(data: ArtDTO): Art {

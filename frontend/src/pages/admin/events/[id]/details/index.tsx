@@ -138,6 +138,7 @@ export default function EventDetails(props: InferGetServerSidePropsType<typeof g
         <Flexbox
           tagName="ul"
           direction={{ xs: 'column' }}
+          style={{ display: 'none' }}
         >
           <Text tagName="li">
             <Flexbox alignItems={{ xs: 'center' }}>

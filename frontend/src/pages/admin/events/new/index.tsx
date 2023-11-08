@@ -44,7 +44,7 @@ export default function EventsNew() {
       pushCreateEventSuccessFeedback()
       redirectToEventsList()
     } catch {
-      pushUpdateEventErrorFeedback()
+      pushCreateEventErrorFeedback()
       setIsCreatingEvent(false)
     }
   }
@@ -57,7 +57,7 @@ export default function EventsNew() {
     })
   }
 
-  function pushUpdateEventErrorFeedback() {
+  function pushCreateEventErrorFeedback() {
     toast('Ocorreu um erro ao cadastrar, tente novamente!', {
       type: 'error',
       theme: 'colored',
