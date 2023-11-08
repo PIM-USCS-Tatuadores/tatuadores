@@ -1,5 +1,6 @@
 import { use, useEffect, useState } from 'react'
 import { InferGetServerSidePropsType } from 'next'
+import { toast } from 'react-toastify'
 import { withSession } from '@/lib/session'
 import { Injector } from '@/infra/di/Injector'
 import { FlashDay, IFlashDayGateway } from '@/infra/gateways/FlashDay'
@@ -13,14 +14,33 @@ import style from './style.module.css'
 interface ActionCardProps {
   icon: string,
   label: string,
-  path: string
+  path?: string
+  onClick?: () => any
 }
 
 function ActionCard(props: ActionCardProps) {
+  function Wrapper(props: any) {
+    if (props.href)
+      return (
+        <Card
+          tagName="a"
+          {...props}
+        />
+      )
+
+    return (
+      <Card
+        tagName="button"
+        type="button"
+        {...props}
+      />
+    )
+  }
+
   return (
-    <Card
-      tagName="a"
+    <Wrapper
       href={props.path}
+      onClick={props.onClick}
     >
       <Flexbox
         direction={{ xs: 'column' }}
@@ -35,7 +55,7 @@ function ActionCard(props: ActionCardProps) {
           {props.label}
         </Text>
       </Flexbox>
-    </Card>
+    </Wrapper>
   )
 }
 
@@ -64,6 +84,34 @@ export default function EventDetails(props: InferGetServerSidePropsType<typeof g
     })
     setIsEventActive(!isEventActive)
     setIsFetching(false)
+  }
+
+  function handleCopyToClipboard() {
+    try {
+      const origin = location.origin
+      const path = `/events/${props.id}`
+      const url = new URL(path, origin).href
+      navigator.clipboard.writeText(url)
+      pushCopyToClipboardSuccessFeedback()
+    } catch {
+      pushCopyToClipboardErrorFeedback()
+    }
+  }
+
+  function pushCopyToClipboardSuccessFeedback() {
+    toast('Link do evento copiado com sucesso!', {
+      type: 'success',
+      theme: 'colored',
+      position: 'top-right'
+    })
+  }
+
+  function pushCopyToClipboardErrorFeedback() {
+    toast('Não foi possível copiar, tente novamente!', {
+      type: 'success',
+      theme: 'colored',
+      position: 'top-right'
+    })
   }
 
   if (!flashDay) {
@@ -140,7 +188,7 @@ export default function EventDetails(props: InferGetServerSidePropsType<typeof g
           <ActionCard
             icon="ios_share"
             label="Compartilhar"
-            path="#"
+            onClick={handleCopyToClipboard}
           />
         </section>
       </Flexbox>
