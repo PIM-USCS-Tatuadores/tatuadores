@@ -5,6 +5,7 @@ import { Provider } from '@/infra/di/Provider'
 import { AuthGateway } from '@/infra/gateways/AuthGateway'
 import { FlashDayGateway } from '@/infra/gateways/FlashDayGateway'
 import { FetchAdapter } from '@/infra/http/FetchAdapter'
+import { Session } from '@/infra/http/Session'
 import { ToastContainer } from 'react-toastify'
 import type { AppProps } from 'next/app'
 import { Roboto } from 'next/font/google'
@@ -21,6 +22,7 @@ function App({ Component, pageProps }: AppProps) {
   Provider.provide('authGateway', new AuthGateway(http))
   Provider.provide('flashDayGateway', new FlashDayGateway(http))
   Provider.provide('fileStorageGateway', new FileStorageGateway())
+  new Session()
 
   return (
     <div
