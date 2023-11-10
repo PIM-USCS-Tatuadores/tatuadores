@@ -49,8 +49,8 @@ export default function ContactsNew(props: InferGetServerSidePropsType<typeof ge
       await flashDayGateway.createContact(props.id, {
         name: state.name,
         email: state.email,
-        phone: state.phone,
-        acceptContact: state.agreed
+        phone: state.phone.replace(/\D/g, ''),
+        accept_contact: state.agreed
       })
       pushCreateContactSuccessFeedback()
       sendWhatsAppMessage()
@@ -78,7 +78,7 @@ export default function ContactsNew(props: InferGetServerSidePropsType<typeof ge
   }
 
   function redirectToFlashDayPage() {
-    router.push(`/events/${props.flashDay.id}`)
+    router.replace(`/events/${props.flashDay.id}`)
   }
 
   function sendWhatsAppMessage() {

@@ -3,7 +3,7 @@ import { InferGetServerSidePropsType } from 'next'
 import { toast } from 'react-toastify'
 import { withSession } from '@/lib/session'
 import { Injector } from '@/infra/di/Injector'
-import { FlashDay, IFlashDayGateway } from '@/infra/gateways/FlashDay'
+import { Contact, FlashDay, IFlashDayGateway } from '@/infra/gateways/FlashDay'
 import DefaultLayout from '@/components/layouts/default-layout'
 import Flexbox from '@/components/flexbox'
 import Text from '@/components/text'
@@ -84,6 +84,55 @@ export default function EventDetails(props: InferGetServerSidePropsType<typeof g
     })
     setIsEventActive(!isEventActive)
     setIsFetching(false)
+  }
+
+  async function handleContactDownload() {
+    try {
+      const response = await flashDayGateway.getContacts(flashDay?.id as string)
+      const content = createCSV(response)
+      downloadCSV(content)
+      pushDownloadContactSuccessFeedback()
+    } catch {
+      pushDownloadContactErrorFeedback()
+    }
+  }
+
+  function createCSV(contacts: Contact[]) {
+    let csvContent = "data:text/csv;charset=utf-8,";
+    const row = ['nome', 'email', 'telefone', 'permite contato'].join(",")
+    csvContent += row + "\r\n"
+    contacts.forEach(function({ name, email, phone, acceptContact }) {
+      const row = [name, email, phone, acceptContact ? 'sim' : 'não'].join(",")
+      csvContent += row + "\r\n"
+    })
+    return csvContent
+  }
+
+  function downloadCSV(content: string) {
+    const encodedUri = encodeURI(content)
+    const link = document.createElement("a")
+    const fileName = `${flashDay?.name.toLocaleLowerCase().replaceAll(' ', '-')}.csv`
+    link.setAttribute("href", encodedUri)
+    link.setAttribute("download", fileName)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  function pushDownloadContactSuccessFeedback() {
+    toast('CSV gerado com sucesso!', {
+      type: 'success',
+      theme: 'colored',
+      position: 'top-right'
+    })
+  }
+
+  function pushDownloadContactErrorFeedback() {
+    toast('Não foi possível gerar o CSV, tente novamente!', {
+      type: 'success',
+      theme: 'colored',
+      position: 'top-right'
+    })
   }
 
   function handleCopyToClipboard() {
@@ -183,7 +232,7 @@ export default function EventDetails(props: InferGetServerSidePropsType<typeof g
           <ActionCard
             icon="download"
             label="Baixar contatos"
-            path="#"
+            onClick={handleContactDownload}
           />
 
           <ActionCard

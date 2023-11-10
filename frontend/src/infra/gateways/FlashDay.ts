@@ -7,7 +7,8 @@ export interface IFlashDayGateway {
   getArts(id: string, options?: FlashDayGatewayOptions): Promise<Art[]>;
   createArt(id: string, data: CreateArtDTO, options?: FlashDayGatewayOptions): Promise<any>;
   updateArt(id: string, data: UpdateArtDTO, options?: FlashDayGatewayOptions): Promise<any>;
-  createContact(id: string, data: CreateContactDTO, options?: FlashDayGatewayOptions): Promise<any>;
+  createContact(id: string, data: ContactDTO, options?: FlashDayGatewayOptions): Promise<any>;
+  getContacts(id: string, options?: FlashDayGatewayOptions): Promise<Contact[]>;
 }
 
 export type FlashDayDTO = {
@@ -58,11 +59,11 @@ export type ArtDTO = {
   flash_day_id: string | undefined
 }
 
-export type CreateContactDTO = {
+export type ContactDTO = {
   name: string,
   email: string,
   phone: string,
-  acceptContact: boolean
+  accept_contact: boolean
 }
 
 export type Art = {
@@ -84,6 +85,13 @@ export type FlashDay = {
   phone: string,
   active: boolean,
   artistId: string,
+}
+
+export type Contact = {
+  name: string,
+  email: string,
+  phone: string,
+  acceptContact: boolean
 }
 
 export type FlashDayGatewayOptions = {

@@ -4,8 +4,9 @@ import { IHttpClient } from '../http/HttpClient';
 import {
   Art,
   ArtDTO,
+  Contact,
+  ContactDTO,
   CreateArtDTO,
-  CreateContactDTO,
   FlashDay,
   FlashDayDTO,
   FlashDayGatewayOptions,
@@ -106,8 +107,28 @@ export class FlashDayGateway implements IFlashDayGateway {
     return response
   }
 
-  createContact(id: string, data: CreateContactDTO, options?: FlashDayGatewayOptions | undefined): Promise<any> {
-    return Promise.resolve()
+  async createContact(id: string, data: ContactDTO, options?: FlashDayGatewayOptions | undefined): Promise<any> {
+    const endpoint = `/api/v1/arts/${id}/contacts`
+    const response = await this.httpClient.post(endpoint, data, {
+      signal: options?.signal,
+      headers: Object.assign({}, options?.headers, {
+        'Content-Type': 'application/json'
+      }),
+      credentials: 'include'
+    })
+    return response
+  }
+
+  async getContacts(id: string, options?: FlashDayGatewayOptions | undefined): Promise<Contact[]> {
+    const endpoint = `/api/v1/flash_days/${id}/contacts`
+    const response: ContactDTO[] = await this.httpClient.get(endpoint, {
+      signal: options?.signal,
+      headers: Object.assign({}, options?.headers, {
+        'Content-Type': 'application/json'
+      }),
+      credentials: 'include'
+    })
+    return response.map(this.transformContact)
   }
 
   private transformArt(data: ArtDTO): Art {
@@ -135,6 +156,15 @@ export class FlashDayGateway implements IFlashDayGateway {
       phone: data.phone,
       active: !!data.active,
       artistId: data.artist_id as string
+    }
+  }
+
+  private transformContact(data: ContactDTO): Contact {
+    return {
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      acceptContact: data.accept_contact
     }
   }
 }
