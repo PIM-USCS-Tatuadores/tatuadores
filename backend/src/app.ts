@@ -19,6 +19,9 @@ import { CreateArt } from './application/usecases/CreateArt'
 import { GetArt } from './application/usecases/GetArt'
 import { GetFlashDayArts } from './application/usecases/GetFlashDayArts'
 import { UpdateArt } from './application/usecases/UpdateArt'
+import { CreateContact } from './application/usecases/CreateContact'
+import { ContactRepositoryDatabase } from './infra/repository/ContactRepositoryDatabase'
+import { GetFlashDayContacts } from './application/usecases/GetFlashDayContacts'
 
 config(process.env.NODE_ENV)
 const app = express()
@@ -34,6 +37,7 @@ const userRepository = new UserRepositoryDatabase(connection)
 const artistRepository = new ArtistRepositoryDatabase(connection)
 const flashDayRepository = new FlashDayRepositoryDatabase(connection)
 const artRepository = new ArtRepositoryDatabase(connection)
+const contactRepository = new ContactRepositoryDatabase(connection)
 
 app.post('/api/v1/artists/register', async (req, res) => {
   try {
@@ -250,6 +254,26 @@ app.get('/api/v1/flash_days/:flashDayId/arts', async (req, res) => {
   }
 })
 
+app.get('/api/v1/flash_days/:flashDayId/contacts', withAuthMiddleware, async (req, res) => {
+  try {
+    const flashDayId = req.params.flashDayId
+    const artistId = req.user.userId
+    const usecase = new GetFlashDayContacts(contactRepository)
+    const output = await usecase.execute({ flashDayId, artistId })
+    res.status(200).json(output.map(contact => ({
+      id: contact.id,
+      name: contact.name,
+      email: contact.email,
+      phone: contact.phone,
+      accept_contact: contact.acceptContact
+    })))
+  } catch (error: any) {
+    res.status(400).json({
+      message: error.message
+    })
+  }
+})
+
 app.get('/api/v1/arts/:artId', async (req, res) => {
   try {
     const artId = req.params.artId
@@ -294,6 +318,27 @@ app.patch('/api/v1/arts/:artId', withAuthMiddleware, async (req, res) => {
     })
     res.status(200).json({
       art_id: output.artId
+    })
+  } catch (error: any) {
+    res.status(422).json({
+      message: error.message
+    })
+  }
+})
+
+app.post('/api/v1/arts/:artId/contacts', async (req, res) => {
+  try {
+    const artId = req.params.artId
+    const usecase = new CreateContact(contactRepository)
+    const output = await usecase.execute({
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      acceptContact: req.body.accept_contact,
+      artId
+    })
+    res.status(201).json({
+      contact_id: output.contactId
     })
   } catch (error: any) {
     res.status(422).json({

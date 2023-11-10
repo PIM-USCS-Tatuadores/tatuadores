@@ -320,6 +320,108 @@ test('Deve editar uma arte de um evento flash day', async () => {
   expect(art.flash_day_id).toBe(flashDayId)
 })
 
+test('Deve criar um contato de uma arte', async () => {
+  await register("John Doe", "john8@doe.com", "123456")
+  const tokenCookie = await login("john8@doe.com", "123456")
+  const flashDayResponse = await axios.post(`http://localhost:3000/api/v1/flash_days`, {
+    title: 'Flash Tattoo #1',
+    starts_at: '2023-10-08',
+    ends_at: '2023-10-16',
+    phone: '11949729444',
+    active: true
+  }, {
+    headers: {
+      'Cookie': tokenCookie
+    }
+  })
+  const flashDayId = flashDayResponse.data.flash_day_id
+  const artResponse = await axios.post(`http://localhost:3000/api/v1/flash_days/${flashDayId}/arts`, {
+    title: 'Título da Arte #1',
+    description: 'Descrição da arte',
+    price: 300,
+    size: 12,
+    href: 'https://cdn.awsli.com.br/600x1000/779/779540/produto/1562181402876970705.jpg',
+    alt: 'imagem de um leão'
+  }, {
+    headers: {
+      'Cookie': tokenCookie
+    }
+  })
+  const artId = artResponse.data.art_id
+  const createResponse = await axios.post(`http://localhost:3000/api/v1/arts/${artId}/contacts`, {
+    name: 'Jane Doe',
+    email: 'jane@doe.com',
+    phone: '11999999999',
+    accept_contact: true
+  })
+  const contactId = createResponse.data.contact_id
+  expect(contactId).toBeDefined()
+})
+
+test('Deve retornar todos os contatos de um flash day', async () => {
+  await register("John Doe", "john9@doe.com", "123456")
+  const tokenCookie = await login("john9@doe.com", "123456")
+  const flashDayResponse = await axios.post(`http://localhost:3000/api/v1/flash_days`, {
+    title: 'Flash Tattoo #1',
+    starts_at: '2023-10-08',
+    ends_at: '2023-10-16',
+    phone: '11949729444',
+    active: true
+  }, {
+    headers: {
+      'Cookie': tokenCookie
+    }
+  })
+  const flashDayId = flashDayResponse.data.flash_day_id
+  const artResponse = await axios.post(`http://localhost:3000/api/v1/flash_days/${flashDayId}/arts`, {
+    title: 'Título da Arte #1',
+    description: 'Descrição da arte',
+    price: 300,
+    size: 12,
+    href: 'https://cdn.awsli.com.br/600x1000/779/779540/produto/1562181402876970705.jpg',
+    alt: 'imagem de um leão'
+  }, {
+    headers: {
+      'Cookie': tokenCookie
+    }
+  })
+  const artId = artResponse.data.art_id
+  await axios.post(`http://localhost:3000/api/v1/arts/${artId}/contacts`, {
+    name: 'Jane Doe',
+    email: 'jane@doe.com',
+    phone: '11999999999',
+    accept_contact: true
+  })
+  await axios.post(`http://localhost:3000/api/v1/arts/${artId}/contacts`, {
+    name: 'John Doe',
+    email: 'john@doe.com',
+    phone: '11999999979',
+    accept_contact: false
+  })
+  const contactResponse = await axios.get(`http://localhost:3000/api/v1/flash_days/${flashDayId}/contacts`, {
+    headers: {
+      'Cookie': tokenCookie
+    }
+  })
+  const contacts = contactResponse.data
+  expect(contacts).toEqual([
+    {
+      id: expect.any(String),
+      name: 'Jane Doe',
+      email: 'jane@doe.com',
+      phone: '11999999999',
+      accept_contact: true
+    },
+    {
+      id: expect.any(String),
+      name: 'John Doe',
+      email: 'john@doe.com',
+      phone: '11999999979',
+      accept_contact: false
+    }
+  ])
+})
+
 async function register(name: string, email: string, password: string) {
   const registerResponse = await axios.post('http://localhost:3000/api/v1/artists/register', {
     name,
